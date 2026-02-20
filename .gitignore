@@ -1,3 +1,5 @@
 .env
+.envrc
 .python-version
 *.csv
+.dri_env/
