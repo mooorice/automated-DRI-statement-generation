@@ -6,9 +6,9 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from .config import PipelineConfig
-from .generation import create_llm_client, _call_llm_with_retry
-from .prompts import load_prompt_sections
+from autoconcourse.config import PipelineConfig
+from autoconcourse.generation import create_llm_client, _call_llm_with_retry
+from autoconcourse.prompts import load_prompt_sections
 
 logger = logging.getLogger("autoconcourse.prompt_optimization")
 

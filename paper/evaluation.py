@@ -6,7 +6,7 @@ from collections import Counter
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from .config import PipelineConfig
+from autoconcourse.config import PipelineConfig
 
 logger = logging.getLogger("autoconcourse.evaluation")
 

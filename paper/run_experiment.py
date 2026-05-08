@@ -17,7 +17,7 @@ Ablation IDs:
     A8: No anchors (anchors.enabled: false)
 """
 
-from autoconcourse.cli import experiment_main
+from paper.cli import experiment_main
 
 if __name__ == "__main__":
     experiment_main()

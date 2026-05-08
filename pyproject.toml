@@ -13,15 +13,11 @@ dependencies = [
     "numpy>=1.24.0",
     "openai>=1.0.0",
     "python-dotenv>=1.0.0",
-    "requests>=2.31.0",
     "beautifulsoup4>=4.12.0",
     "sentence-transformers>=2.2.0",
     "torch>=2.0.0",
     "scikit-learn>=1.3.0",
-    "umap-learn>=0.5.0",
     "pyyaml>=6.0",
-    "rank-bm25>=0.2.2",
-    "hdbscan>=0.8.33",
     "scipy>=1.11.0",
 ]
 
@@ -33,12 +29,16 @@ dev = [
     "ipykernel>=6.0.0",
     "matplotlib>=3.7.0",
 ]
+# Paper-only dependencies (baselines, evaluation, ablations).
+# Install with: pip install -e ".[paper]"
+paper = [
+    "rank-bm25>=0.2.2",
+    "hdbscan>=0.8.33",
+    "umap-learn>=0.5.0",
+]
 
 [project.scripts]
-autoconcourse-pipeline = "autoconcourse.cli:pipeline_main"
-autoconcourse-baselines = "autoconcourse.cli:baselines_main"
-autoconcourse-evaluate = "autoconcourse.cli:evaluation_main"
-autoconcourse-experiment = "autoconcourse.cli:experiment_main"
+autoconcourse = "autoconcourse.cli:pipeline_main"
 
 [tool.setuptools.packages.find]
 include = ["autoconcourse*"]

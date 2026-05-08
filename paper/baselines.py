@@ -8,10 +8,10 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
-from .config import PipelineConfig
-from .generation import create_llm_client, generate_statements, build_generation_prompt, _call_llm_with_retry
-from .prompts import load_prompt_sections
-from .retrieval import cosine_similarity_vec, aggregate_anchor_embeddings
+from autoconcourse.config import PipelineConfig
+from autoconcourse.generation import create_llm_client, generate_statements, build_generation_prompt, _call_llm_with_retry
+from autoconcourse.prompts import load_prompt_sections
+from autoconcourse.retrieval import cosine_similarity_vec, aggregate_anchor_embeddings
 
 logger = logging.getLogger("autoconcourse.baselines")
 
@@ -200,7 +200,7 @@ def run_bertopic(
     if anchor_emb is not None and anchor_cats is not None:
         agg_anchors = aggregate_anchor_embeddings(anchor_emb, anchor_cats, num_categories)
     else:
-        from .embedding import embed_texts
+        from autoconcourse.embedding import embed_texts
         subcat_texts = [s.get("description", s["name"]) for s in subcategories]
         agg_anchors = embed_texts(subcat_texts, config.embedding.model)
 
@@ -249,7 +249,7 @@ def run_extractive(
             anchor_embeddings, anchor_categories, num_categories
         )
     else:
-        from .embedding import embed_texts
+        from autoconcourse.embedding import embed_texts
         subcat_texts = [s.get("description", s["name"]) for s in subcategories]
         agg_anchors = embed_texts(subcat_texts, config.embedding.model)
 
@@ -291,7 +291,7 @@ def run_dense_no_anchor(
     **kwargs,
 ) -> list[dict]:
     """B6: Single topic embedding → global top-k → LLM (no anchor subcategories)."""
-    from .embedding import embed_texts
+    from autoconcourse.embedding import embed_texts
 
     if client is None:
         client = create_llm_client(config)
