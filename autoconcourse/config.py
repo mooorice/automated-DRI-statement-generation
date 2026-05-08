@@ -17,24 +17,30 @@ class TopicConfig:
 
 
 @dataclass
-class ChunkingConfig:
-    method: str = "paragraph"
-    min_length: int = 20
-
-
-@dataclass
 class FilteringConfig:
     keywords_file: str | None = None
-    require_keyword: bool = True
+    require_keyword: bool = False
+    min_length: int = 20
+    languages: list[str] = field(default_factory=list)
 
 
 @dataclass
 class CorpusConfig:
-    source: str = "csv"
+    """Corpus loading config.
+
+    `adapter` selects the input-format adapter (csv, jsonl, swissdox, text_dir).
+    The column-mapping fields below are passed to adapters that read tabular
+    formats; `options` is a free-form dict for adapter-specific extras.
+    """
+
+    adapter: str = "csv"
     path: str = ""
     text_column: str = "text"
-    metadata_columns: list[str] = field(default_factory=lambda: ["medium_code", "language", "id"])
-    chunking: ChunkingConfig = field(default_factory=ChunkingConfig)
+    id_column: str | None = None
+    language_column: str | None = None
+    group_column: str | None = None
+    source_id_column: str | None = None
+    options: dict = field(default_factory=dict)
     filtering: FilteringConfig = field(default_factory=FilteringConfig)
 
 
