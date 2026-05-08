@@ -114,6 +114,10 @@ class GenerationConfig:
     temperature: float = 0.7
     max_retries: int = 3
     retry_delay: float = 5.0
+    # Optional: a string with a {group} placeholder, rendered into the
+    # generation prompt when retrieval is stratified by groups. If null,
+    # group labels are not surfaced to the LLM even when retrieval groups them.
+    group_instruction_template: str | None = None
     prompt_optimization: PromptOptimizationConfig = field(default_factory=PromptOptimizationConfig)
 
 
