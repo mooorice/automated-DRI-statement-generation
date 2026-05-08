@@ -4,7 +4,6 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 import yaml
 
@@ -59,9 +58,12 @@ class AnchorConfig:
     anchors_file: str | None = None
     subcategories_file: str = ""
     context_document: str | None = None
-    languages: list[str] = field(default_factory=lambda: ["de", "fr", "it"])
+    # Languages to generate anchors in. Default is monolingual English; for a
+    # multilingual corpus, set to e.g. ["de", "fr", "it"] so each subcategory
+    # has one anchor per language.
+    languages: list[str] = field(default_factory=lambda: ["en"])
     model: str = "openai/gpt-4o"
-    anchors_per_subcategory: int = 3
+    anchors_per_subcategory: int = 1
 
 
 @dataclass
@@ -72,37 +74,26 @@ class EmbeddingConfig:
 
 
 @dataclass
-class UMAPParams:
-    n_neighbors: int = 30
-    min_dist: float = 0.0
-    metric: str = "cosine"
-
-
-@dataclass
-class ReductionConfig:
-    method: str = "umap"
-    n_components: int = 50
-    umap_params: UMAPParams = field(default_factory=UMAPParams)
-
-
-@dataclass
 class RetrievalConfig:
     method: str = "anchor_cosine"
     top_k: int = 500
+    # How to combine per-anchor similarities within a subcategory:
+    #   "max"  — best-matching anchor (multilingual-friendly)
+    #   "mean" — average across anchors
+    aggregation: str = "max"
 
 
 @dataclass
-class PerspectiveGroupsConfig:
+class GroupsConfig:
+    """Optional stratification by a corpus column (e.g. political leaning, source type).
+
+    When enabled, retrieval runs once per group, producing a (group, subcategory)
+    keyed result. The actual group → values mapping is read from `groups_file`.
+    """
+
     enabled: bool = False
     groups_file: str | None = None
-    metadata_column: str = "medium_code"
-
-
-@dataclass
-class PromptOptimizationConfig:
-    enabled: bool = False
-    iterations: int = 3
-    optimization_model: str | None = None
+    column: str = "group"
 
 
 @dataclass
@@ -118,13 +109,6 @@ class GenerationConfig:
     # generation prompt when retrieval is stratified by groups. If null,
     # group labels are not surfaced to the LLM even when retrieval groups them.
     group_instruction_template: str | None = None
-    prompt_optimization: PromptOptimizationConfig = field(default_factory=PromptOptimizationConfig)
-
-
-@dataclass
-class EvaluationConfig:
-    reference_file: str | None = None
-    coverage_thresholds: list[float] = field(default_factory=lambda: [0.7, 0.8, 0.9])
 
 
 @dataclass
@@ -136,11 +120,9 @@ class PipelineConfig:
     corpus: CorpusConfig
     anchors: AnchorConfig
     embedding: EmbeddingConfig
-    reduction: ReductionConfig
     retrieval: RetrievalConfig
-    perspective_groups: PerspectiveGroupsConfig
+    groups: GroupsConfig
     generation: GenerationConfig
-    evaluation: EvaluationConfig
 
     # Set at load time
     _base_dir: Path = field(default_factory=lambda: Path("."))
@@ -205,19 +187,14 @@ def load_config(config_path: str | Path) -> PipelineConfig:
 
     base_dir = config_path.parent.parent  # configs/ -> project root
 
-    # Build each section
     topic = _build_dataclass(TopicConfig, raw.get("topic"))
     llm = _build_dataclass(LLMConfig, raw.get("llm"))
     corpus = _build_dataclass(CorpusConfig, raw.get("corpus"))
     anchors = _build_dataclass(AnchorConfig, raw.get("anchors"))
     embedding = _build_dataclass(EmbeddingConfig, raw.get("embedding"))
-    reduction = _build_dataclass(ReductionConfig, raw.get("reduction"))
     retrieval = _build_dataclass(RetrievalConfig, raw.get("retrieval"))
-    perspective_groups = _build_dataclass(
-        PerspectiveGroupsConfig, raw.get("perspective_groups")
-    )
+    groups = _build_dataclass(GroupsConfig, raw.get("groups"))
     generation = _build_dataclass(GenerationConfig, raw.get("generation"))
-    evaluation = _build_dataclass(EvaluationConfig, raw.get("evaluation"))
 
     config = PipelineConfig(
         topic=topic,
@@ -225,11 +202,9 @@ def load_config(config_path: str | Path) -> PipelineConfig:
         corpus=corpus,
         anchors=anchors,
         embedding=embedding,
-        reduction=reduction,
         retrieval=retrieval,
-        perspective_groups=perspective_groups,
+        groups=groups,
         generation=generation,
-        evaluation=evaluation,
         _base_dir=base_dir,
         _raw=raw,
     )
@@ -263,17 +238,13 @@ def _validate_config(config: PipelineConfig) -> None:
             if not p.exists():
                 errors.append(f"anchors.anchors_file not found: {p}")
 
-    if config.perspective_groups.enabled and config.perspective_groups.groups_file:
-        p = config.resolve_path(config.perspective_groups.groups_file)
+    if config.groups.enabled and config.groups.groups_file:
+        p = config.resolve_path(config.groups.groups_file)
         if not p.exists():
-            errors.append(f"perspective_groups.groups_file not found: {p}")
+            errors.append(f"groups.groups_file not found: {p}")
 
-    if config.reduction.method not in ("umap", "pca", "none"):
-        errors.append(f"reduction.method must be 'umap', 'pca', or 'none', got '{config.reduction.method}'")
-
-    valid_retrieval = ("anchor_cosine", "bm25", "random", "dense_no_anchor")
-    if config.retrieval.method not in valid_retrieval:
-        errors.append(f"retrieval.method '{config.retrieval.method}' not in {valid_retrieval}")
+    if config.retrieval.aggregation not in ("max", "mean"):
+        errors.append(f"retrieval.aggregation must be 'max' or 'mean', got '{config.retrieval.aggregation}'")
 
     if errors:
         raise ValueError("Config validation errors:\n" + "\n".join(f"  - {e}" for e in errors))

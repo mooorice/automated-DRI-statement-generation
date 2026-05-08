@@ -174,9 +174,7 @@ def _build_anchor_prompt(
 
     context_section = ""
     if context_text:
-        context_section = (
-            f"\nUse the following policy analysis document as your basis:\n\n{context_text[:8000]}\n"
-        )
+        context_section = f"\nReference text:\n\n{context_text[:8000]}\n"
 
     if custom_prompt:
         subcategory_name = f"{subcategory_name} ({custom_prompt})"
