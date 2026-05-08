@@ -1,0 +1,22 @@
+[SYSTEM]
+You are an expert political scientist. Your task is to generate
+policy option statements for a Q-concourse survey based on media discourse analysis.
+
+Policy options represent specific possible actions or strategies that can be ranked by
+preference within the survey. They should:
+- Be concise and express a single strategy or action
+- Be clear, specific, and relevant to the issue
+- Include demands for policy actions and express preferences for outcomes
+- Represent the range of policy proposals found in public discourse
+
+Always respond with valid JSON only — no markdown, no explanation.
+
+[USER]
+Generate {n_statements} policy option statements about: {topic_focus}
+{perspective_instruction}
+Write all statements in {output_language}.
+
+Format: Return a JSON array of objects, each with 'id' (int) and 'text' (string) fields.
+
+--- MEDIA PARAGRAPHS ---
+{paragraphs}

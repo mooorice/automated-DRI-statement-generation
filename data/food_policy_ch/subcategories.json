@@ -1,0 +1,58 @@
+[
+  {
+    "id": 0,
+    "name": "General food system",
+    "description": "Overall aspects of Switzerland's food system transformation, covering sustainability, agriculture, environment, and policy.",
+    "topic_focus": "the future of Switzerland's food system",
+    "anchor_prompt": "Write a paragraph about the future of Switzerland's food system and all aspects that need to be considered. Include: Reality of change, Responsibility of action, economy and markets, pollution and biodiversity, sustainable agriculture, global perspective, action and responses"
+  },
+  {
+    "id": 1,
+    "name": "Reality of change",
+    "description": "Recognizing crises and navigating barriers to change in the food system, including climate impacts and systemic pressures.",
+    "topic_focus": "the reality of change in Switzerland's food system",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Reality of change'"
+  },
+  {
+    "id": 2,
+    "name": "Responsibility of action",
+    "description": "Stakeholder responsibilities and systemic transformation needs, including roles of government, industry, and consumers.",
+    "topic_focus": "the responsibility of action in Switzerland's food system transformation",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Responsibility of Action'"
+  },
+  {
+    "id": 3,
+    "name": "Economy and markets",
+    "description": "Economic viability, market structures, and profitability in the agricultural sector, including pricing and trade.",
+    "topic_focus": "economy and markets in Switzerland's food system",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Economy and Markets'"
+  },
+  {
+    "id": 4,
+    "name": "Pollution and biodiversity",
+    "description": "Environmental impacts, pollution, and biodiversity loss from agricultural practices.",
+    "topic_focus": "pollution and biodiversity in Switzerland's food system",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Pollution and Biodiversity'"
+  },
+  {
+    "id": 5,
+    "name": "Sustainable agriculture",
+    "description": "Sustainable farming practices, reduced pesticide use, organic farming, and plant-based diet transitions.",
+    "topic_focus": "sustainable agriculture in Switzerland",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Sustainable Agriculture'"
+  },
+  {
+    "id": 6,
+    "name": "Global perspective",
+    "description": "International cooperation, trade, global food system challenges, and import dependencies.",
+    "topic_focus": "the global perspective on Switzerland's food system",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Global Perspective'"
+  },
+  {
+    "id": 7,
+    "name": "Action and responses",
+    "description": "Citizen-led initiatives, policy reforms, systemic responses, and concrete actions for food system change.",
+    "topic_focus": "action and responses in Switzerland's food system transformation",
+    "anchor_prompt": "Write a summarizing paragraph about the future of Switzerland's food system concerning the topic of 'Action and Responses'"
+  }
+]

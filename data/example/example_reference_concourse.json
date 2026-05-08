@@ -1,0 +1,18 @@
+{
+  "topic": "climate_example",
+  "source": "Expert panel 2026",
+  "statements": [
+    {
+      "id": "ref_001",
+      "text": "The economic costs of inaction on climate change far exceed the costs of transitioning to a low-carbon economy.",
+      "subcategory": "Climate science and urgency",
+      "type": "consideration"
+    },
+    {
+      "id": "ref_002",
+      "text": "Governments should mandate a complete phase-out of coal-fired power plants by 2035.",
+      "subcategory": "Energy transition",
+      "type": "policy_option"
+    }
+  ]
+}

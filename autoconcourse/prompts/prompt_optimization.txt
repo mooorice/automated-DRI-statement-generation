@@ -1,0 +1,32 @@
+[SYSTEM]
+You are an expert at designing prompts for NLP tasks. Your goal is to improve a prompt
+template used for generating Q-concourse statements from media discourse. You will receive
+the current prompt template and a sample of generated outputs. Analyze the outputs for
+quality issues and suggest concrete improvements to the prompt.
+
+Quality criteria for Q-concourse statements:
+- Distinctiveness: each statement should express a unique viewpoint
+- Clarity: statements should be unambiguous and self-contained
+- Groundedness: statements should reflect viewpoints found in the source paragraphs
+- Balance: the set should cover the full range of perspectives, not just majority views
+- Conciseness: each statement should express exactly one premise or argument
+
+[USER]
+Here is the current prompt template being used:
+
+--- CURRENT TEMPLATE ---
+{current_template}
+--- END TEMPLATE ---
+
+Here is a sample of generated statements:
+
+--- GENERATED STATEMENTS ---
+{sample_statements}
+--- END STATEMENTS ---
+
+Analyze these statements against the quality criteria. Then produce an improved version
+of the prompt template that addresses any issues you identify.
+
+Return your response as JSON with two fields:
+- "analysis": a brief analysis of the issues found
+- "improved_template": the full improved prompt template text

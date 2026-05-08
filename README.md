@@ -1,62 +1,143 @@
-# Automated Deliberative Reason Index (DRI) Statement Generation
+# AutoConcourse
 
-This repository contains the code for an automated approach to generating Deliberative Reason Index (DRI) statements using advanced natural language processing (NLP) and large language models (LLMs). The project aims to streamline the process of assessing group deliberation quality by automating the traditionally labor-intensive task of DRI statement generation.
+Automated generation of Q-concourse statements from discourse corpora. Given a corpus of media texts and a set of user-defined subtopics, AutoConcourse retrieves relevant passages, optionally stratifies by source perspective, and uses LLMs to produce structured consideration statements suitable for Q-methodology surveys.
 
-## Overview
+## Quick Start
 
-The DRI is a sophisticated metric for evaluating group reasoning and deliberation quality. Traditionally, generating DRI statements has been a complex and time-consuming process requiring extensive human labor. This project introduces an innovative automated approach that significantly reduces the human effort involved in survey preparation while maintaining the quality and validity of the assessment.
+```bash
+# 1. Install
+pip install -e ".[dev]"
+
+# 2. Set API key (for LLM-based steps)
+echo "OPENROUTER_API_KEY=your-key-here" > .env
+
+# 3. Run the pipeline
+python run_pipeline.py --config configs/healthcare_ch.yaml
+```
+
+## Pipeline Overview
+
+AutoConcourse is a config-driven pipeline with six stages:
+
+1. **Corpus** — Load, chunk, and keyword-filter a text corpus (CSV, TSV, JSONL)
+2. **Anchors** — Load or LLM-generate multilingual "content anchor" paragraphs per subtopic
+3. **Embed** — Encode corpus paragraphs and anchors with a SentenceTransformer model
+4. **Reduce** — Optional dimensionality reduction (PCA, UMAP, or none)
+5. **Retrieve** — Cosine similarity retrieval of top-k paragraphs per subtopic anchor
+6. **Generate** — LLM generation of consideration statements from retrieved paragraphs
+
+Each stage caches its outputs under `cache/{topic_id}/`. Re-running skips completed stages unless `--force` is passed.
+
+```
+python run_pipeline.py --config configs/healthcare_ch.yaml --steps corpus,embed,generate --force
+```
 
 ## Project Structure
 
-The repository is organized into several key components:
+```
+autoconcourse/           # Core Python package
+├── config.py            # YAML config loading and validation
+├── corpus.py            # Data loading, chunking, keyword filtering
+├── anchors.py           # Anchor loading and LLM generation
+├── embedding.py         # SentenceTransformer embedding
+├── reduction.py         # PCA / UMAP dimensionality reduction
+├── retrieval.py         # Anchor-guided cosine retrieval
+├── generation.py        # LLM statement generation
+├── baselines.py         # Six baseline systems (B1–B6)
+├── evaluation.py        # Coverage, groundedness, distinctiveness metrics
+├── prompts/             # Prompt templates (editable text files)
+├── utils.py             # Logging, embedding I/O, JSON helpers
+└── cli.py               # CLI orchestration
 
-- `01a_get_articles.ipynb`: Notebook for retrieving and processing news articles from the swissdox API
-- `01b_content_anchor_generation.ipynb`: Notebook for generating content anchors with an LLM
-- `02_chunk_into_paragraphs.ipynb`: Notebook for text chunking and preprocessing for the newspaper articles from swissdox API
-- `03_generate_embeddings.py`: Script for generating embeddings for content anchors and newspaper paragraphs
-- `04_dimensionality_reduction.py`: Script for reducing embedding dimensions
-- `05_categorization.py`: Script for categorizing content by cosine similarity scoring
-- `06_similarity_score_analysis.ipynb`: Notebook for analyzing the distribution of similarity scores
-- `07_generate_dri_statements.ipynb`: Notebook for generating final DRI statements with an LLM
-- `Validation/`: Directory containing the notebooks, scripts and data for the validation process
-- `data/`: Directory for storing processed data and intermediate results
+configs/                 # Topic configurations (YAML)
+├── schema.yaml          # Reference config with all options documented
+├── healthcare_ch.yaml   # Swiss healthcare costs
+└── food_policy_ch.yaml  # Swiss food policy
 
-## Methodology
+data/                    # Topic data files
+├── example/             # Example formats and templates for new topics
+├── healthcare_ch/       # Keywords, subcategories, perspective groups
+└── food_policy_ch/      # Keywords, subcategories, perspective groups
 
-The project implements a systematic framework that:
+run_pipeline.py          # Main entry point
+run_baselines.py         # Run baseline systems
+run_evaluation.py        # Evaluate outputs against reference concourse
+run_experiment.py        # Ablation experiments
+legacy/                  # Original thesis notebooks (archived)
+```
 
-1. Retrieves and processes news articles to approximate the public sphere
-2. Generates embeddings from the content using multilingual models
-3. Categorizes content using cosine similarity
-4. Leverages LLMs to generate DRI statements
-5. Validates the generated statements against a traditional DRI survey
+## Configuration
 
-## Setup
+Each topic is defined by a single YAML file. See `configs/schema.yaml` for all options or `data/example/example_config.yaml` for a minimal template.
 
-1. Clone the repository
-2. Install required dependencies
-3. Set up your environment variables in `.env` and `Validation/.env`
+Key configuration sections:
 
-## Usage
+| Section | Purpose |
+|---|---|
+| `topic` | Name, ID, languages |
+| `corpus` | Source file, chunking method, keyword filtering |
+| `anchors` | Method (`llm_generated` or `from_file`), subcategory definitions |
+| `embedding` | SentenceTransformer model, batch size, device |
+| `reduction` | Method (`none`, `pca`, `umap`), target dimensions |
+| `retrieval` | Method, top-k per subcategory |
+| `perspective_groups` | Optional source stratification by political leaning |
+| `generation` | LLM model, statements per group, output language |
+| `evaluation` | Reference concourse file, coverage thresholds |
 
-The workflow follows a sequential process through the numbered notebooks and scripts. Each step builds upon the previous one:
+## Baselines
 
-1. Start with `01a_get_articles.ipynb` to retrieve your source articles
-2. Generate content anchors using `01b_content_anchor_generation.ipynb`
-3. Process the articles usin `02_chunk_into_paragraphs.ipynb`
-4. Generate embeddings using `03_generate_embeddings.py`
-5. Apply dimensionality reduction with `04_dimensionality_reduction.py`
-6. Categorize content using `05_categorization.py`
-7. Analyze similarity scores in `06_similarity_score_analysis.ipynb`
-8. Generate final DRI statements using `07_generate_dri_statements.ipynb`
+Six baseline systems for comparison:
 
-## Results
+| ID | Name | Description |
+|---|---|---|
+| B1 | Zero-context | LLM generates from topic description only (no corpus) |
+| B2 | Random retrieval | Random paragraphs fed to LLM |
+| B3 | BM25 retrieval | BM25 keyword retrieval instead of dense |
+| B4 | BERTopic | HDBSCAN clustering with anchor mapping |
+| B5 | Extractive | Top paragraphs as statements (no LLM) |
+| B6 | Dense no-anchor | Single topic embedding, global retrieval |
 
-The validation results and analysis can be found in the `Validation/` directory. The final DRI statements are generated in `07_generate_dri_statements.ipynb`.
+```bash
+python run_baselines.py --config configs/healthcare_ch.yaml --baselines B1,B3,B6
+```
 
-## Acknowledgments
+## Evaluation
 
-This project is part of a Master's thesis in Political Science, focusing on the application of AI and ML techniques to automatically generate DRI statements.
+Compares generated concourses against a human-authored reference:
+
+```bash
+python run_evaluation.py --config configs/healthcare_ch.yaml --systems all
+```
+
+Metrics: coverage (at thresholds), groundedness, distinctiveness, balance, novelty. Outputs per-system JSON and a LaTeX comparison table under `evaluation/results/`.
+
+## Ablation Experiments
+
+Run systematic ablations (dim. reduction method, top-k, embedding model, generator model, etc.):
+
+```bash
+python run_experiment.py --config configs/healthcare_ch.yaml --ablations all
+python run_experiment.py --config configs/healthcare_ch.yaml --ablations A1,A5 --dry-run
+```
+
+Available ablations: A1 (no reduction), A2 (PCA), A3 (UMAP), A4 (no perspective groups), A5 (top-k variation), A6 (embedding model), A7 (generator model), A8 (no anchors).
+
+## Setting Up a New Topic
+
+1. Create data files using `data/example/` as templates:
+   - `keywords.json` — filtering keywords per language
+   - `subcategories.json` — subtopic definitions with anchor prompts
+   - (Optional) `perspective_groups.json` — source groupings
+   - (Optional) `reference_concourse.json` — human reference for evaluation
+2. Place your corpus CSV at the path specified in your config
+3. Copy `configs/schema.yaml` to `configs/your_topic.yaml` and fill in paths
+4. Run: `python run_pipeline.py --config configs/your_topic.yaml`
+
+## Environment
+
+- Python >= 3.11
+- API key for LLM access (OpenRouter recommended; any OpenAI-compatible endpoint works)
+- Set `OPENROUTER_API_KEY` or `OPENAI_API_KEY` in `.env`
 
 ## License
 

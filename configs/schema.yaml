@@ -1,0 +1,77 @@
+# AutoConcourse Configuration Schema / Reference
+# This file documents all available configuration options with their defaults.
+# Copy this file and modify for your topic.
+
+topic:
+  name: ""                    # Required: human-readable topic name
+  id: ""                      # Required: short identifier (used in paths)
+  languages: ["en"]           # Required: list of languages in the corpus
+
+llm:
+  base_url: null              # OpenAI-compatible endpoint (null = auto-detect from model)
+  api_key_env: null           # Env var name for API key (null = OPENROUTER_API_KEY / OPENAI_API_KEY)
+  default_model: "openai/gpt-4o"  # Default model for all LLM steps
+  extra_headers: {}           # Additional HTTP headers (e.g. for OpenRouter)
+    # HTTP-Referer: "https://autoconcourse.org"
+    # X-Title: "AutoConcourse"
+
+corpus:
+  source: "csv"               # "csv", "tsv", "tsv.xz", "jsonl"
+  path: ""                    # Path to corpus file (relative to project root)
+  text_column: "text"         # Column containing the text
+  metadata_columns: []        # Additional columns to preserve
+  chunking:
+    method: "paragraph"       # "paragraph", "sentence", "none"
+    min_length: 20            # Minimum chunk length in characters
+  filtering:
+    keywords_file: null       # Path to keywords JSON (null = no filtering)
+    require_keyword: true     # If true, filter paragraphs by keywords
+
+anchors:
+  enabled: true               # Set to false to skip anchors entirely
+  method: "llm_generated"     # "llm_generated", "from_file"
+  anchors_file: null          # Path to pre-defined anchors JSON (for "from_file" method)
+  subcategories_file: ""      # Required: path to subcategories.json
+  context_document: null      # Optional: PDF/text document for context
+  languages: ["en"]           # Languages to generate anchors in
+  model: "openai/gpt-4o"     # LLM model for anchor generation
+  anchors_per_subcategory: 3  # Number of anchor texts per subcategory
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"  # SentenceTransformer model
+  batch_size: 32
+  device: "cpu"               # "cpu" or "cuda"
+
+reduction:
+  method: "none"              # "none" (default), "umap", "pca"
+  n_components: 50
+  umap_params:
+    n_neighbors: 30
+    min_dist: 0.0
+    metric: "cosine"
+
+retrieval:
+  method: "anchor_cosine"     # "anchor_cosine", "bm25", "random", "dense_no_anchor"
+  top_k: 500                  # Number of paragraphs to retrieve per subcategory
+
+perspective_groups:
+  enabled: false              # Set true to stratify by perspective groups
+  groups_file: null           # Path to perspective_groups.json
+  metadata_column: "medium_code"  # Column for group membership
+
+generation:
+  model: "openai/gpt-4o"     # LLM model (OpenRouter format: provider/model)
+  statements_per_group_per_subcategory: 5
+  output_language: "en"       # Language of generated statements
+  prompt_template: "default"  # "default" or path to custom template
+  temperature: 0.7
+  max_retries: 3
+  retry_delay: 5.0            # Seconds between retries
+  prompt_optimization:        # Optional: iterative prompt improvement
+    enabled: false
+    iterations: 3
+    optimization_model: null  # Model for optimization (null = use generation.model)
+
+evaluation:
+  reference_file: null        # Path to reference concourse JSON
+  coverage_thresholds: [0.7, 0.8, 0.9]

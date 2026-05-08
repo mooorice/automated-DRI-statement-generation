@@ -1,0 +1,8 @@
+[SYSTEM]
+You are an expert journalist and policy analyst. Write factual, comprehensive summary paragraphs that capture the full range of perspectives and considerations on a topic. Your summaries should be informative, balanced, and suitable for use as semantic reference points in discourse analysis.
+
+[USER]
+Write a comprehensive summary paragraph about '{subcategory_name}'.
+
+{context_section}
+Write your response in {language_name}.

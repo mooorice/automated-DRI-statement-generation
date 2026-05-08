@@ -1,0 +1,30 @@
+{
+  "groups": {
+    "right": {
+      "label": "Right",
+      "label_de": "Rechts",
+      "medium_codes": ["WEWO", "WEW", "WDAY", "NZZO"]
+    },
+    "right-liberal": {
+      "label": "Right-liberal",
+      "label_de": "Rechtsliberal",
+      "medium_codes": ["NZZS", "NZZ", "SAW"]
+    },
+    "centrist": {
+      "label": "Centrist",
+      "label_de": "Mitte",
+      "medium_codes": ["LUZ", "ZWAS", "ZWAO", "ZWA", "ZWSO", "ZWAF", "SRFA", "SRF", "SRFV", "AZO", "AZM", "RTS", "RTSV"]
+    },
+    "left-liberal": {
+      "label": "Left-liberal",
+      "label_de": "Linksliberal",
+      "medium_codes": ["BAZ", "NNBS", "TLM", "TLMD", "HEU", "NNHEU", "TDG", "NNTDG", "BZ", "NNBE", "BLI", "BLIO", "NNTA", "TA", "TAZT", "TPS", "TPSO", "TAS"]
+    },
+    "left": {
+      "label": "Left",
+      "label_de": "Links",
+      "medium_codes": ["WOZ", "SBLI"]
+    }
+  },
+  "metadata_column": "medium_code"
+}

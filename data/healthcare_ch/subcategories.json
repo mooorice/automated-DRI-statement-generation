@@ -1,0 +1,66 @@
+[
+  {
+    "id": 0,
+    "name": "General health costs",
+    "name_de": "Allgemeine Gesundheitskosten",
+    "description": "Overall rising healthcare costs in Switzerland, covering insurance system, social aspects, hospital sector, healthcare provision, and health prevention.",
+    "topic_focus": "health costs in Switzerland",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen absatz über die steigenden gesundheitskosten in der schweiz und welche aspekte man dabei beachten muss. nutze das angehangene dokument als grundlage. Erwähne folgende themen: Krankenversicherungssystem, soziale Aspekte, Spitalwesen, Gesundheitsversorgung, Gesundheitsprävention"
+  },
+  {
+    "id": 1,
+    "name": "Health system reforms",
+    "name_de": "Gesundheitssystemreformen",
+    "description": "Non-incremental policy reforms of the Swiss health system, including comprehensive structural changes to the healthcare system.",
+    "topic_focus": "the health system of Switzerland and non-incremental policy reforms",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Health system of Switzerland and non-incremental policy reforms\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 2,
+    "name": "Healthcare utilization",
+    "name_de": "Inanspruchnahme von Gesundheitsdienstleistungen",
+    "description": "Increasing utilization of healthcare services per person, including supply-side and demand-side factors driving volume expansion.",
+    "topic_focus": "Increasing utilisation of healthcare services per person",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Increasing utilisation of healthcare services per person\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 3,
+    "name": "Hospital planning and financing",
+    "name_de": "Spitalplanung und -finanzierung",
+    "description": "Hospital planning and financing challenges, including high hospital density, financing structures, and centralization proposals.",
+    "topic_focus": "hospital planning and financing",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Hospital planning and financing\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 4,
+    "name": "Compulsory insurance design",
+    "name_de": "Gestaltung der obligatorischen Krankenversicherung",
+    "description": "Design, configuration, and organization of compulsory health insurance (OKP/LAMal), including premium structures and benefit catalogs.",
+    "topic_focus": "the design/configuration/organisation of compulsory health insurance",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Design/Configuration/Organisation of Compulsory health insurance\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 5,
+    "name": "Health prevention incentives",
+    "name_de": "Anreize zur Gesundheitsprävention",
+    "description": "Lack of incentives for health prevention in Switzerland, including structural and political barriers to preventive measures.",
+    "topic_focus": "a lack of incentives for health prevention",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Lack of incentives for Health Prevention\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 6,
+    "name": "Health service coordination",
+    "name_de": "Koordination der Gesundheitsdienste",
+    "description": "Coordination of health services, including gatekeeping models, interprofessional collaboration, and care fragmentation.",
+    "topic_focus": "the coordination of health services",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Coordination of health services\" auf Basis der Politikfeldanalyse"
+  },
+  {
+    "id": 7,
+    "name": "Household financial burden",
+    "name_de": "Finanzielle Belastung der Haushalte",
+    "description": "Financial burden of health costs on households, including regressive premium structures and cost distribution.",
+    "topic_focus": "the financial burden of health costs on households (costs distribution)",
+    "anchor_prompt": "du bist ein erfahrener journalist, schreibe einen zusammenfassenden absatz über \"Financial burden of health costs and household (costs distribution)\" auf Basis der Politikfeldanalyse"
+  }
+]
