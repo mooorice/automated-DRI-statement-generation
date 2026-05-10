@@ -1,0 +1,38 @@
+[
+  {
+    "category": 0,
+    "language": "de",
+    "subcategory_name": "Climate science and urgency",
+    "text": "Der wissenschaftliche Konsens zum Klimawandel ist eindeutig: Menschliche Aktivitäten haben den Planeten seit der vorindustriellen Zeit um etwa 1,1 °C erwärmt, hauptsächlich durch Treibhausgasemissionen aus der Verbrennung fossiler Brennstoffe. Wissenschaftler warnen, dass ohne sofortiges und drastisches Handeln die 1,5-Grad-Schwelle innerhalb der nächsten ein bis zwei Jahrzehnte überschritten wird, mit gravierenden Folgen für Ökosysteme, Landwirtschaft und Küstengemeinden weltweit."
+  },
+  {
+    "category": 0,
+    "language": "fr",
+    "subcategory_name": "Climate science and urgency",
+    "text": "Le consensus scientifique sur le changement climatique est sans équivoque : les activités humaines ont réchauffé la planète d'environ 1,1 °C depuis l'époque préindustrielle, principalement à cause des émissions de gaz à effet de serre provenant de la combustion des énergies fossiles. Les scientifiques avertissent que sans action immédiate et drastique, le seuil de 1,5 degré sera franchi dans la prochaine décennie ou les deux suivantes, avec des conséquences graves pour les écosystèmes, l'agriculture et les communautés côtières."
+  },
+  {
+    "category": 0,
+    "language": "it",
+    "subcategory_name": "Climate science and urgency",
+    "text": "Il consenso scientifico sul cambiamento climatico è inequivocabile: le attività umane hanno riscaldato il pianeta di circa 1,1 °C rispetto all'era preindustriale, principalmente attraverso le emissioni di gas serra derivanti dalla combustione dei combustibili fossili. Gli scienziati avvertono che senza un'azione immediata e drastica, la soglia di 1,5 gradi verrà superata entro il prossimo decennio o due, con conseguenze gravi per gli ecosistemi, l'agricoltura e le comunità costiere."
+  },
+  {
+    "category": 1,
+    "language": "de",
+    "subcategory_name": "Energy transition",
+    "text": "Die globale Energiewende beinhaltet einen grundlegenden Wandel von der Abhängigkeit von fossilen Brennstoffen hin zu erneuerbaren Energiequellen wie Solar-, Wind- und Wasserkraft. Sie erfordert massive Investitionen in Infrastruktur und die Umschulung der Arbeitskräfte, während die Stromnetze ausgebaut werden müssen, um intermittierende Energiequellen aufzunehmen. Befürworter sehen darin eine Chance für wirtschaftliches Wachstum, während Kritiker auf Übergangskosten und Auswirkungen auf einkommensschwache Haushalte hinweisen."
+  },
+  {
+    "category": 1,
+    "language": "fr",
+    "subcategory_name": "Energy transition",
+    "text": "La transition énergétique mondiale implique un passage fondamental de la dépendance aux énergies fossiles aux sources d'énergie renouvelables telles que le solaire, l'éolien et l'hydroélectricité. Elle nécessite des investissements massifs dans les infrastructures et la reconversion de la main-d'œuvre, tandis que les réseaux électriques doivent être adaptés pour accueillir des sources intermittentes. Les partisans y voient une opportunité de croissance économique, tandis que les critiques soulignent les coûts de transition et l'impact sur les ménages à faible revenu."
+  },
+  {
+    "category": 1,
+    "language": "it",
+    "subcategory_name": "Energy transition",
+    "text": "La transizione energetica globale comporta uno spostamento fondamentale dalla dipendenza dai combustibili fossili a fonti di energia rinnovabili come solare, eolico e idroelettrico. Richiede massicci investimenti in infrastrutture e nella riqualificazione della forza lavoro, mentre le reti elettriche devono essere adattate per accogliere fonti intermittenti. I sostenitori vi vedono un'opportunità di crescita economica, mentre i critici sottolineano i costi di transizione e l'impatto sulle famiglie a basso reddito."
+  }
+]

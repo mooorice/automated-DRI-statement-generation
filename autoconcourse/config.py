@@ -176,6 +176,20 @@ def _build_dataclass(cls, data: dict | None):
     return cls(**kwargs)
 
 
+def _find_project_root(start: Path) -> Path:
+    """Walk upward from `start` until a pyproject.toml or .git is found.
+
+    Falls back to the current working directory if no marker is found. This
+    lets configs live anywhere in the tree (configs/, data/example/<topic>/)
+    while paths in the config still resolve relative to the project root.
+    """
+    p = start.resolve()
+    for candidate in [p, *p.parents]:
+        if (candidate / "pyproject.toml").exists() or (candidate / ".git").is_dir():
+            return candidate
+    return Path.cwd()
+
+
 def load_config(config_path: str | Path) -> PipelineConfig:
     """Load and validate a YAML config file, returning a typed PipelineConfig."""
     config_path = Path(config_path)
@@ -185,7 +199,7 @@ def load_config(config_path: str | Path) -> PipelineConfig:
     with open(config_path) as f:
         raw = yaml.safe_load(f)
 
-    base_dir = config_path.parent.parent  # configs/ -> project root
+    base_dir = _find_project_root(config_path)
 
     topic = _build_dataclass(TopicConfig, raw.get("topic"))
     llm = _build_dataclass(LLMConfig, raw.get("llm"))

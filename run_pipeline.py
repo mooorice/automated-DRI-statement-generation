@@ -2,9 +2,13 @@
 """Run the AutoConcourse pipeline.
 
 Usage:
-    python run_pipeline.py --config configs/healthcare_ch.yaml
-    python run_pipeline.py --config configs/healthcare_ch.yaml --steps embed,reduce,retrieve,generate
-    python run_pipeline.py --config configs/healthcare_ch.yaml --force
+    python run_pipeline.py --config data/example/monolingual/config.yaml
+    python run_pipeline.py --config data/example/multilingual/config.yaml --steps corpus,anchors,embed,retrieve
+    python run_pipeline.py --config <your_topic>/config.yaml --force
+
+Equivalent invocations:
+    python -m autoconcourse.cli --config <...>
+    autoconcourse --config <...>          # if installed via `pip install -e .`
 """
 
 from autoconcourse.cli import pipeline_main

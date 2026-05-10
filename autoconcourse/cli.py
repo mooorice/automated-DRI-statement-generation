@@ -128,3 +128,7 @@ def run_pipeline(config, steps, force=False):
         return statements
 
     logger.info("Pipeline steps completed.")
+
+
+if __name__ == "__main__":
+    pipeline_main()

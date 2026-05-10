@@ -1,0 +1,45 @@
+# Minimal monolingual example — climate change discourse, English only.
+# Run from project root: python -m autoconcourse.cli --config data/example/monolingual/config.yaml
+
+topic:
+  name: "Climate change policy (example)"
+  id: "example_monolingual"
+  languages: ["en"]
+
+llm:
+  default_model: "openai/gpt-4o"
+
+corpus:
+  adapter: "csv"
+  path: "data/example/monolingual/corpus.csv"
+  text_column: "text"
+  id_column: "id"
+  language_column: "language"
+  group_column: "source"      # newspaper outlet, used by the optional groups stratification
+  filtering:
+    min_length: 20
+    keywords_file: "data/example/monolingual/keywords.json"
+    require_keyword: false    # tiny example corpus — keep all rows
+
+anchors:
+  enabled: true
+  method: "from_file"
+  anchors_file: "data/example/monolingual/anchors.json"
+  subcategories_file: "data/example/monolingual/subcategories.json"
+  languages: ["en"]
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"
+  device: "cpu"
+
+retrieval:
+  top_k: 5                    # tiny corpus
+  aggregation: "max"
+
+groups:
+  enabled: false              # set true to enable per-source stratification
+
+generation:
+  model: "openai/gpt-4o"
+  statements_per_group_per_subcategory: 3
+  output_language: "en"

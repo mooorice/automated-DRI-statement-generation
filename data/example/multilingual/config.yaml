@@ -1,0 +1,43 @@
+# Minimal multilingual example — same topic in DE / FR / IT.
+# Each subcategory has one anchor per language. Retrieval scores a passage as
+# max similarity to its subcategory's anchors, so a German passage matches the
+# German anchor and a French passage matches the French anchor.
+#
+# Run from project root: python -m autoconcourse.cli --config data/example/multilingual/config.yaml
+
+topic:
+  name: "Climate change policy (multilingual example)"
+  id: "example_multilingual"
+  languages: ["de", "fr", "it"]
+
+llm:
+  default_model: "openai/gpt-4o"
+
+corpus:
+  adapter: "csv"
+  path: "data/example/multilingual/corpus.csv"
+  text_column: "text"
+  id_column: "id"
+  language_column: "language"
+  filtering:
+    min_length: 20
+
+anchors:
+  enabled: true
+  method: "from_file"
+  anchors_file: "data/example/multilingual/anchors.json"
+  subcategories_file: "data/example/multilingual/subcategories.json"
+  languages: ["de", "fr", "it"]
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"
+  device: "cpu"
+
+retrieval:
+  top_k: 3                    # tiny corpus
+  aggregation: "max"          # critical for multilingual: best-language wins
+
+generation:
+  model: "openai/gpt-4o"
+  statements_per_group_per_subcategory: 3
+  output_language: "en"       # synthesise English statements from multilingual passages

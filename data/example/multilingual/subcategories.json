@@ -1,0 +1,16 @@
+[
+  {
+    "id": 0,
+    "name": "Climate science and urgency",
+    "description": "Scientific evidence for climate change, projected impacts, and the urgency of action.",
+    "topic_focus": "climate science and the urgency of addressing climate change",
+    "anchor_prompt": "Write a comprehensive paragraph about the current scientific consensus on climate change, projected impacts, and the urgency of action."
+  },
+  {
+    "id": 1,
+    "name": "Energy transition",
+    "description": "Transitioning from fossil fuels to renewable energy sources, including challenges and opportunities.",
+    "topic_focus": "the transition from fossil fuels to renewable energy",
+    "anchor_prompt": "Write a comprehensive paragraph about the global energy transition, covering renewables adoption, fossil fuel phase-out, and economic implications."
+  }
+]
