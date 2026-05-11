@@ -15,6 +15,59 @@ echo "OPENROUTER_API_KEY=your-key-here" > .env       # or OPENAI_API_KEY
 
 Python 3.11+. CPU works; for large corpora set `embedding.device: cuda` in your config.
 
+## LLM provider
+
+The pipeline talks to any OpenAI-compatible endpoint via the official `openai` Python SDK — same pattern as the JS SDK:
+
+```python
+OpenAI(
+    api_key="<...>",
+    base_url="https://openrouter.ai/api/v1",
+    default_headers={"HTTP-Referer": "...", "X-Title": "..."},
+)
+```
+
+Three providers are wired up. Pick one in `llm.provider`:
+
+| Provider | Env var | base_url | Notes |
+|---|---|---|---|
+| `openrouter` (default) | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | Use any model: `openai/gpt-4o`, `anthropic/claude-3-opus`, `deepseek/deepseek-chat`, … |
+| `openai` | `OPENAI_API_KEY` | SDK default (`api.openai.com`) | OpenAI models only: `gpt-4o`, `gpt-4o-mini`, … |
+| `custom` | whatever you set | whatever you set | Azure OpenAI, local vLLM, Ollama, proxies, … |
+
+Minimal OpenRouter config (used by both example topics):
+
+```yaml
+llm:
+  provider: "openrouter"
+  default_model: "openai/gpt-4o"
+  site_name: "AutoConcourse"        # optional; → X-Title header for openrouter.ai rankings
+  site_url: "https://your-site"     # optional; → HTTP-Referer
+
+generation:
+  model: "openai/gpt-4o"            # or deepseek/deepseek-chat, anthropic/claude-3-opus, ...
+```
+
+To swap to OpenAI direct:
+
+```yaml
+llm:
+  provider: "openai"
+generation:
+  model: "gpt-4o"
+```
+
+To point at a local model (e.g. vLLM):
+
+```yaml
+llm:
+  provider: "custom"
+  base_url: "http://localhost:8000/v1"
+  api_key_env: "LOCAL_LLM_KEY"      # may be "EMPTY" for some local servers
+generation:
+  model: "your-local-model-id"
+```
+
 ---
 
 ## Quick start

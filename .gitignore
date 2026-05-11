@@ -2,6 +2,9 @@
 .envrc
 .python-version
 .dri_env/
+.venv/
+venv/
+.todo.txt
 
 # Python
 __pycache__/

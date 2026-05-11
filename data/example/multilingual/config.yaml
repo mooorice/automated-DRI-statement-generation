@@ -11,7 +11,9 @@ topic:
   languages: ["de", "fr", "it"]
 
 llm:
+  provider: "openrouter"            # Set OPENROUTER_API_KEY in .env
   default_model: "openai/gpt-4o"
+  site_name: "AutoConcourse"
 
 corpus:
   adapter: "csv"

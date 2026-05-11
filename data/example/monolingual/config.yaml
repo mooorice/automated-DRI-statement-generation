@@ -7,7 +7,9 @@ topic:
   languages: ["en"]
 
 llm:
+  provider: "openrouter"            # Set OPENROUTER_API_KEY in .env
   default_model: "openai/gpt-4o"
+  site_name: "AutoConcourse"        # optional, shows up on openrouter.ai rankings
 
 corpus:
   adapter: "csv"

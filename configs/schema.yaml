@@ -7,12 +7,18 @@ topic:
   languages: ["en"]           # Required: list of languages present in the corpus
 
 llm:
-  base_url: null              # OpenAI-compatible endpoint (null = auto-detect from model)
-  api_key_env: null           # Env var holding the key (null = OPENROUTER_API_KEY / OPENAI_API_KEY)
+  provider: "openrouter"      # "openrouter" | "openai" | "custom"
+  # Provider defaults (overridable below):
+  #   openrouter → base_url https://openrouter.ai/api/v1, api_key_env OPENROUTER_API_KEY
+  #   openai     → base_url SDK default (api.openai.com), api_key_env OPENAI_API_KEY
+  #   custom     → base_url and api_key_env REQUIRED below (e.g. Azure, vLLM, local)
+  base_url: null              # Overrides provider default
+  api_key_env: null           # Overrides provider default
   default_model: "openai/gpt-4o"
-  extra_headers: {}           # Optional HTTP headers (e.g. for OpenRouter):
-    # HTTP-Referer: "https://autoconcourse.org"
-    # X-Title: "AutoConcourse"
+  extra_headers: {}           # Arbitrary HTTP headers passed to every request
+  # OpenRouter-only: optional ranking headers (sent only when provider == openrouter)
+  site_url: null              # → HTTP-Referer
+  site_name: null             # → X-Title
 
 corpus:
   adapter: "csv"              # "csv" | "jsonl" | "swissdox" | "text_dir"

@@ -45,10 +45,28 @@ class CorpusConfig:
 
 @dataclass
 class LLMConfig:
+    """LLM provider configuration.
+
+    `provider` selects how api_key, base_url, and default headers are resolved:
+      - "openrouter" (default): base_url = https://openrouter.ai/api/v1,
+        api_key from OPENROUTER_API_KEY, sends optional OpenRouter ranking
+        headers (HTTP-Referer, X-Title) if site_url/site_name are set.
+      - "openai":              base_url = SDK default (api.openai.com),
+        api_key from OPENAI_API_KEY.
+      - "custom":              base_url and api_key_env must be set explicitly.
+
+    base_url, api_key_env, and extra_headers override the provider defaults
+    when set (useful e.g. for Azure OpenAI, local vLLM, or proxying).
+    """
+
+    provider: str = "openrouter"
     base_url: str | None = None
     api_key_env: str | None = None
     default_model: str = "openai/gpt-4o"
     extra_headers: dict[str, str] = field(default_factory=dict)
+    # OpenRouter ranking headers — surfaced only when provider == "openrouter".
+    site_url: str | None = None     # → HTTP-Referer
+    site_name: str | None = None    # → X-Title
 
 
 @dataclass

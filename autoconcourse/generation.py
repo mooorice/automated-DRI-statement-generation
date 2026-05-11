@@ -23,34 +23,89 @@ def _get_prompt_sections(template_name: str) -> dict[str, str]:
     return _PROMPT_CACHE[template_name]
 
 
+PROVIDER_DEFAULTS = {
+    "openrouter": {
+        "base_url": "https://openrouter.ai/api/v1",
+        "api_key_env": "OPENROUTER_API_KEY",
+    },
+    "openai": {
+        "base_url": None,                # OpenAI SDK uses api.openai.com by default
+        "api_key_env": "OPENAI_API_KEY",
+    },
+}
+
+
+def resolve_llm_settings(config: PipelineConfig) -> dict:
+    """Resolve provider, base_url, api_key_env, and headers from llm config.
+
+    Returns a dict with: provider, base_url, api_key_env, headers. Pure function
+    (no env reads, no client construction) so it's straightforward to test.
+    """
+    provider = config.llm.provider
+    if provider == "custom":
+        if not config.llm.base_url:
+            raise ValueError("llm.provider: 'custom' requires llm.base_url to be set")
+        if not config.llm.api_key_env:
+            raise ValueError("llm.provider: 'custom' requires llm.api_key_env to be set")
+        base_url = config.llm.base_url
+        api_key_env = config.llm.api_key_env
+    elif provider in PROVIDER_DEFAULTS:
+        defaults = PROVIDER_DEFAULTS[provider]
+        base_url = config.llm.base_url or defaults["base_url"]
+        api_key_env = config.llm.api_key_env or defaults["api_key_env"]
+    else:
+        raise ValueError(
+            f"Unknown llm.provider: {provider!r}. "
+            f"Use one of: openrouter, openai, custom."
+        )
+
+    headers = dict(config.llm.extra_headers or {})
+    if provider == "openrouter":
+        if config.llm.site_url and "HTTP-Referer" not in headers:
+            headers["HTTP-Referer"] = config.llm.site_url
+        if config.llm.site_name and "X-Title" not in headers:
+            headers["X-Title"] = config.llm.site_name
+
+    return {
+        "provider": provider,
+        "base_url": base_url,
+        "api_key_env": api_key_env,
+        "headers": headers,
+    }
+
+
 def create_llm_client(config: PipelineConfig) -> OpenAI:
     """Create an OpenAI-compatible client from config.
 
-    Resolution order for API key: config.llm.api_key_env → OPENROUTER_API_KEY → OPENAI_API_KEY.
-    Resolution order for base_url: config.llm.base_url → auto-detect 'provider/model' → default.
+    Mirrors the OpenAI / OpenRouter SDK pattern:
+
+        OpenAI(api_key=..., base_url=..., default_headers=...)
+
+    Provider selection is explicit via `llm.provider` (default: "openrouter").
     """
     from dotenv import load_dotenv
     load_dotenv()
 
-    api_key_env = config.llm.api_key_env
-    api_key = os.getenv(api_key_env) if api_key_env else (
-        os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
-    )
+    settings = resolve_llm_settings(config)
+
+    api_key = os.getenv(settings["api_key_env"])
     if not api_key:
         raise ValueError(
-            "No API key found. Set api_key_env in config, or "
-            "OPENROUTER_API_KEY / OPENAI_API_KEY in .env"
+            f"No API key found in env var {settings['api_key_env']!r}. "
+            f"Set it in .env (llm.provider={settings['provider']!r})."
         )
 
-    base_url = config.llm.base_url
-    if base_url is None:
-        model = config.generation.model
-        if "/" in model and not model.startswith("gpt"):
-            base_url = "https://openrouter.ai/api/v1"
-
-    extra_headers = config.llm.extra_headers or {}
-    client = OpenAI(api_key=api_key, base_url=base_url, default_headers=extra_headers or None)
-    logger.info(f"Created LLM client (base_url={base_url or 'default'})")
+    client = OpenAI(
+        api_key=api_key,
+        base_url=settings["base_url"],
+        default_headers=settings["headers"] or None,
+    )
+    logger.info(
+        "LLM client ready: provider=%s base_url=%s model=%s",
+        settings["provider"],
+        settings["base_url"] or "sdk-default",
+        config.generation.model,
+    )
     return client
 
 
