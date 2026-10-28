@@ -144,6 +144,8 @@ def test_create_llm_client_constructs_openai_with_correct_args(monkeypatch):
 
 
 def test_create_llm_client_missing_key_raises(monkeypatch):
+    # create_llm_client calls load_dotenv() which would repopulate keys from .env
+    monkeypatch.setattr("dotenv.load_dotenv", lambda *a, **k: None)
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     cfg = _make_config(LLMConfig(provider="openrouter"))

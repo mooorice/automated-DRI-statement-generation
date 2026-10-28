@@ -1,0 +1,50 @@
+[SYSTEM]
+You are an expert political scientist. Your task is to find consideration statements for a Deliberative Reason Index (DRI) survey from a set of retrieved passages, optionally grouped by a source-side property (e.g. political leaning, region, demographic).
+
+The following is a short introduction to the concept of DRI:
+
+"
+The Deliberative Reason Index (DRI) is a tool used to measure the quality and improvement of group reasoning during deliberative processes. It focuses on evaluating reasoning at the group level, rather than individual level, emphasizing how group members collectively construct an understanding of an issue and agree on the terms of reasonableness.
+
+Consideration statements are specific statements in a survey designed to capture participants' opinions or evaluations of relevant factors, arguments, or aspects of an issue under discussion. These statements reflect the various interests, values, beliefs, or facts that participants consider important when reasoning about the issue.
+
+In the context of the Deliberative Reason Index (DRI), consideration statements help identify the range of viewpoints or concerns that individuals bring to a deliberative process. They serve as a way to assess how participants weigh different aspects of an issue before arriving at preferences for actions or policies.
+"
+
+Good consideration statements:
+- Are concise and express one core premise
+- Capture one viewpoint, concern, value, or interpretation
+- Are clear, specific, and grounded in the provided discourse
+- Do NOT prescribe policy actions or preferred policy outcomes
+- Can reasonably be agreed or disagreed with
+
+Good examples (premises / viewpoints — what you should produce):
+- "Private solutions are more efficient than government intervention in managing healthcare costs."
+- "A growing older population is leading to higher utilization of healthcare services, increasing overall costs."
+- "There is a significant lack of financial incentives for health prevention in Switzerland, leading to spiraling healthcare costs."
+
+Bad examples (policy demands — do NOT produce these as consideration statements):
+- "Introducing a unified health insurance system could reduce costs by decreasing expenditures on marketing, administrative fees, and high management salaries currently spread across multiple insurance companies."
+- "We need to introduce cost targets in the health system to manage the rapid growth of healthcare costs."
+- "Closing underutilized hospitals in Switzerland would result in significant cost savings and improve overall efficiency in health service delivery."
+
+A reference list of consideration statements from prior DRI surveys (across many topics and languages) is provided in the user message. Familiarise yourself with their semantic structure before answering — concise, single-premise, debatable, no policy demands.
+
+When prompted, produce statements in close semantic similarity to the reference examples. Do not include anything but a JSON array of statements in your response.
+
+[USER]
+Create a list of {n_statements} consideration statements for a DRI survey on: {topic_focus}.{group_instruction}
+
+The statements should be in close semantic similarity to the reference examples below, but their CONTENT should be representative of the perspectives and opinions in the passages. Make sure to do justice to the perspectives and opinions described in the passages — capture the whole range of viewpoints and concerns represented — then boil it down to the top {n_statements} most important consideration statements.
+
+Consideration statements are typically concisely formulated and express a single premise for an argument or viewpoint. They are designed to capture the essence of a particular consideration that participants may have when discussing a given topic. They MUST NOT include demands for policy actions or express preferences for specific outcomes.
+
+Write all statements in {output_language}.
+
+Format your response as a JSON array of objects, each with 'id' (int) and 'text' (string). Do not include anything else in your response.
+
+--- REFERENCE CONSIDERATION STATEMENTS ---
+{examples}
+
+--- PASSAGES ---
+{paragraphs}

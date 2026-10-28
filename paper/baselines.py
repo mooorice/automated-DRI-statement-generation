@@ -61,7 +61,7 @@ def run_zero_context(
     if client is None:
         client = create_llm_client(config)
 
-    sections = load_prompt_sections("statement_generation")
+    sections = load_prompt_sections("q-concourse_generation")
     system_prompt = sections.get("system", "")
 
     all_statements = []

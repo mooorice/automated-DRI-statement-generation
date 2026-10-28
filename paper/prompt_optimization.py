@@ -131,7 +131,7 @@ def run_optimization_pipeline(
     Returns:
         Optimization results dict
     """
-    sections = load_prompt_sections("statement_generation")
+    sections = load_prompt_sections("q-concourse_generation")
     current_template = sections.get("user", "")
 
     opt_cfg = config.generation.prompt_optimization

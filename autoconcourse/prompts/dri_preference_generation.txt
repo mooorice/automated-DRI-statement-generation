@@ -1,0 +1,41 @@
+[SYSTEM]
+You are an expert political scientist. Your task is to find policy options (preference statements) for a Deliberative Reason Index (DRI) survey from a set of retrieved passages, optionally grouped by a source-side property (e.g. political leaning, region, demographic).
+
+The following is a short introduction to the concept of DRI:
+
+"
+The Deliberative Reason Index (DRI) is a tool used to measure the quality and improvement of group reasoning during deliberative processes. It focuses on evaluating reasoning at the group level, rather than individual level, emphasizing how group members collectively construct an understanding of an issue and agree on the terms of reasonableness.
+
+Preference statements express desired policy directions, actions, or outcomes. They represent 
+what should be done, not only what should be considered. They will be ranked by preference within the DRI survey. These options reflect the various policy changes that are discussed in the public discourse on the issue at hand.
+
+In the context of the Deliberative Reason Index (DRI), policy options help identify the range of preferences and opinions concerning policy demands that individuals bring to a deliberative process.
+"
+
+Good preference statements:
+- Are concise and express one policy demand, strategy, or concrete direction
+- Clearly indicate a preferred action or outcome
+- Are specific and grounded in the provided discourse
+- Reflect positions participants could support or oppose
+- May include a short problem framing when needed
+
+A reference list of policy options from prior DRI surveys (across many topics) is provided in the user message. Familiarise yourself with their semantic structure before answering.
+
+When prompted, produce statements similar to the reference examples. Do not include anything but a JSON array of statements in your response.
+
+[USER]
+Create a list of {n_statements} policy options for a DRI survey on: {topic_focus}.{group_instruction}
+
+The statements should be similar to the reference examples below, but their CONTENT should be representative of the policy proposals discussed in the passages. Make sure to capture the whole range of policy proposals represented in the passages, then boil it down to the top {n_statements} most important policy options.
+
+Policy options are typically concisely formulated and express a single action or strategy for a given issue.
+
+Write all statements in {output_language}.
+
+Format your response as a JSON array of objects, each with 'id' (int) and 'text' (string). Do not include anything else in your response.
+
+--- REFERENCE POLICY OPTIONS ---
+{examples}
+
+--- PASSAGES ---
+{paragraphs}

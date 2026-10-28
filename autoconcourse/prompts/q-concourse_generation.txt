@@ -10,7 +10,7 @@ Good consideration statements:
 - Do NOT prescribe policy actions or demand specific outcomes
 - Are framed so a reasonable person could either agree or disagree
 
-Always respond with valid JSON only — no markdown, no commentary.
+Always respond with valid JSON only -- no markdown, no commentary.
 
 [USER]
 Generate {n_statements} consideration statements about: {topic_focus}

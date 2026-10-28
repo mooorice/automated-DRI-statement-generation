@@ -42,3 +42,9 @@ autoconcourse = "autoconcourse.cli:pipeline_main"
 
 [tool.setuptools.packages.find]
 include = ["autoconcourse*"]
+
+[tool.setuptools.package-data]
+autoconcourse = [
+    "prompts/*.txt",
+    "prompts/examples/*.txt",
+]
