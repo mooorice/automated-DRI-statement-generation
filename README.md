@@ -1,6 +1,6 @@
 # AutoConcourse
 
-Automated generation of Q-concourse statements from text corpora. You give it a corpus and a list of subcategories; it retrieves topically relevant passages via anchor-guided dense retrieval and uses an LLM to synthesise representative consideration statements suitable for Q-methodology surveys.
+Automated generation of Q-concourse and DRI statements from text corpora. You give it a corpus and a list of subcategories; it retrieves topically relevant passages via anchor-guided dense retrieval and uses an LLM to synthesise representative statements suitable for Q-methodology and DRI-style surveys.
 
 The method is corpus- and language-agnostic: any text input that can be loaded into the canonical shape works, and the default embedding model is multilingual.
 
@@ -46,6 +46,7 @@ llm:
 
 generation:
   model: "openai/gpt-4o"            # or deepseek/deepseek-chat, anthropic/claude-3-opus, ...
+  process: "q-concourse"            # "q-concourse" or "dri"
 ```
 
 To swap to OpenAI direct:
@@ -74,20 +75,20 @@ generation:
 
 ```bash
 # English-only example: 6 paragraphs, 2 subcategories, 2 hand-written anchors
-python -m autoconcourse.cli --config data/example/monolingual/config.yaml
+python -m autoconcourse.cli --config projects/example/monolingual/config.yaml
 
 # Multilingual example: DE/FR/IT, one anchor per language per subcategory
-python -m autoconcourse.cli --config data/example/multilingual/config.yaml
+python -m autoconcourse.cli --config projects/example/multilingual/config.yaml
 ```
 
-After a successful run you'll see:
+After a successful run, everything lives inside the project folder:
 
 ```
-outputs/example_monolingual/anchor_guided/concourse.json    ← what you came for
-cache/example_monolingual/paragraphs.csv                    ← canonical corpus
-cache/example_monolingual/anchors.csv                       ← anchors
-cache/example_monolingual/paragraph_embeddings.npy          ← (n_passages, 384) float
-cache/example_monolingual/anchor_embeddings.npy             ← (n_anchors, 384) float
+projects/example/monolingual/outputs/anchor_guided/concourse.json   ← what you came for
+projects/example/monolingual/data/paragraphs/paragraphs.csv         ← canonical corpus
+projects/example/monolingual/data/anchors/anchors.csv               ← anchors
+projects/example/monolingual/data/embeddings/paragraph_embeddings.npy
+projects/example/monolingual/data/embeddings/anchor_embeddings.npy
 ```
 
 Equivalent invocations:
@@ -144,7 +145,7 @@ The thematic dimensions you want statements organised along. The pipeline runs r
 | `topic_focus` | str | yes | short focus phrase, injected into the generation prompt |
 | `anchor_prompt` | str | only if `anchors.method: llm_generated` | prompt fragment for LLM-based anchor generation |
 
-Example: `data/example/monolingual/subcategories.json`.
+Example: `projects/example/monolingual/subcategories.json`.
 
 ### 3. Anchors (optional — auto-generated if omitted)
 
@@ -163,7 +164,7 @@ Two ways to provide them:
 | `language` | str | no | ISO code; for multilingual corpora, write one anchor per language per subcategory |
 | `subcategory_name` | str | no | for human readability only |
 
-**(b) LLM-generated.** Set `anchors.method: llm_generated`. The pipeline calls the LLM once per (subcategory, language) on first run and caches results to `cache/<topic_id>/anchors.csv`. Optionally pass `anchors.context_document: path/to/source.pdf` and the LLM grounds the anchors on its content.
+**(b) LLM-generated.** Set `anchors.method: llm_generated`. The pipeline calls the LLM once per (subcategory, language) on first run and stores the result at `anchors.anchors_file` (or falls back to `<project>/data/anchors/anchors.csv` if not configured). Optionally pass `anchors.context_folder` and/or `anchors.context_files` to ground generation on source documents.
 
 ### 4. Keywords (optional)
 
@@ -197,7 +198,7 @@ Enable in config: `groups.enabled: true`, `groups.groups_file: path/to/groups.js
 
 ### 6. Config (required)
 
-A single YAML file ties it all together. See `configs/schema.yaml` for the full reference. The minimal config:
+A single YAML file ties it all together. See `projects/example/schema.yaml` for the full reference. The minimal config:
 
 ```yaml
 topic:
@@ -207,15 +208,15 @@ topic:
 
 corpus:
   adapter: "csv"
-  path: "data/my_topic/corpus.csv"
+  path: "projects/my_topic/corpus.csv"
   text_column: "text"
   language_column: "language"
 
 anchors:
   enabled: true
   method: "from_file"
-  anchors_file: "data/my_topic/anchors.json"
-  subcategories_file: "data/my_topic/subcategories.json"
+  anchors_file: "projects/my_topic/anchors.json"
+  subcategories_file: "projects/my_topic/subcategories.json"
 
 embedding:
   model: "paraphrase-multilingual-MiniLM-L12-v2"
@@ -228,6 +229,7 @@ retrieval:
 generation:
   model: "openai/gpt-4o"
   statements_per_group_per_subcategory: 5
+  process: "q-concourse"            # "q-concourse" (considerations only) or "dri" (considerations + preferences)
   output_language: "en"
 ```
 
@@ -235,7 +237,7 @@ generation:
 
 ## Outputs
 
-### Final output: `outputs/<topic.id>/anchor_guided/concourse.json`
+### Final output: `<project>/outputs/anchor_guided/concourse.json`
 
 This is the deliverable.
 
@@ -274,20 +276,22 @@ This is the deliverable.
 | `statements[].group` | str / null | non-null only when groups stratification was enabled |
 | `statements[].source_paragraphs` | list[int/str] | the top 10 retrieved passage ids that informed this statement (for grounding/audit) |
 
-**Statement count.** Without groups: `n_subcategories × statements_per_group_per_subcategory`. With groups: `n_groups × n_subcategories × statements_per_group_per_subcategory`.
+**Statement count.**
+- `generation.process: q-concourse` → without groups: `n_subcategories × statements_per_group_per_subcategory`; with groups: `n_groups × n_subcategories × statements_per_group_per_subcategory`.
+- `generation.process: dri` → generates both consideration and preference statements per bucket. Each type uses `dri_<type>s_per_group_per_subcategory` if set, else falls back to `statements_per_group_per_subcategory`. DRI prompts inject reference examples directly (no vector store needed, OpenRouter-friendly); override via `generation.dri_consideration_examples_file` / `dri_preference_examples_file`, cap via `dri_max_examples`, or set the file to `""` to disable.
 
-### Cache: `cache/<topic.id>/`
+### Cache: `<project>/data/`
 
-Intermediate artifacts. Re-runs skip steps whose outputs already exist (use `--force` to override).
+Intermediate artifacts, project-local. Re-runs skip steps whose outputs already exist (use `--force` to override).
 
 | File | Shape / content | Produced by |
 |---|---|---|
-| `paragraphs.csv` | canonical-shape DataFrame after adapter + filters | corpus step |
-| `anchors.csv` | anchors loaded or LLM-generated | anchors step |
-| `paragraph_embeddings.npy` | `(n_passages, embedding_dim)` float32 | embed step |
-| `anchor_embeddings.npy` | `(n_anchors, embedding_dim)` float32 | embed step |
+| `data/paragraphs/paragraphs.csv` | canonical-shape DataFrame after adapter + filters | corpus step |
+| `data/anchors/anchors.csv` | anchors loaded or LLM-generated | anchors step |
+| `data/embeddings/paragraph_embeddings.npy` | `(n_passages, embedding_dim)` float32 | embed step |
+| `data/embeddings/anchor_embeddings.npy` | `(n_anchors, embedding_dim)` float32 | embed step |
 
-You can safely delete the cache to force a rebuild from scratch.
+You can safely delete `<project>/data/` to force a rebuild from scratch.
 
 ---
 
@@ -328,26 +332,26 @@ Steps: `corpus`, `anchors`, `embed`, `retrieve`, `generate`.
 
 ```bash
 # 1. Copy an example as a starting point
-cp -r data/example/monolingual data/my_topic
+cp -r projects/example/monolingual projects/my_topic
 
 # 2. Replace the corpus
-#    Drop your CSV at data/my_topic/corpus.csv (must have at least 'text';
+#    Drop your CSV at projects/my_topic/corpus.csv (must have at least 'text';
 #    optionally 'id', 'language', and any column you want to stratify on)
 
 # 3. Edit subcategories
-$EDITOR data/my_topic/subcategories.json
+$EDITOR projects/my_topic/subcategories.json
 
-# 4. Either hand-write data/my_topic/anchors.json (one entry per subcategory ×
+# 4. Either hand-write projects/my_topic/anchors.json (one entry per subcategory ×
 #    language) OR delete it and set anchors.method: llm_generated in config
 
 # 5. Update the config: topic.id, corpus.path, anchor/subcategory paths
-$EDITOR data/my_topic/config.yaml
+$EDITOR projects/my_topic/config.yaml
 
 # 6. Run
-python -m autoconcourse.cli --config data/my_topic/config.yaml
+python -m autoconcourse.cli --config projects/my_topic/config.yaml
 
 # 7. Inspect output
-cat outputs/my_topic/anchor_guided/concourse.json
+cat projects/my_topic/outputs/anchor_guided/concourse.json
 ```
 
 For non-CSV input, change `corpus.adapter` and follow the table under [Inputs § 1](#1-corpus-required).
@@ -368,34 +372,38 @@ Six offline smoke tests stub the embedder + LLM and run the full pipeline agains
 ## Layout
 
 ```
-autoconcourse/        # Bare method (~1,600 LOC)
+autoconcourse/        # Bare method (~3,200 lines)
 ├── adapters/         # csv, jsonl, swissdox, text_dir
-├── prompts/          # anchor_generation.txt, statement_generation.txt
+├── prompts/          # anchor_generation.txt, q-concourse_generation.txt, dri_*_generation.txt
+│   └── examples/     # dri_consideration_examples.txt, dri_preference_examples.txt
 ├── config.py         # Typed config + project-root resolution
 ├── corpus.py         # Adapter dispatch + canonical-shape filters
 ├── anchors.py        # Load / generate / save anchors
 ├── embedding.py      # SBERT + .npy I/O
 ├── retrieval.py      # Anchor-guided cosine, max-or-mean over per-language anchors
-├── generation.py     # LLM client + statement generation
+├── generation.py     # LLM client + Q-concourse/DRI generation
+├── subcategories.py  # LLM-assisted subcategory taxonomy (seeded or unseeded)
+├── keywords.py       # LLM-assisted keyword lists
 ├── cli.py            # Single entry point: pipeline_main
 └── __main__.py       # `python -m autoconcourse`
 
-configs/              # Reference schema (configs/schema.yaml)
-data/example/         # Two runnable example topics
-├── monolingual/      # English
-└── multilingual/     # DE / FR / IT
+projects/             # One self-contained folder per case — see projects/README.md
+├── example/          # schema.yaml + runnable monolingual / multilingual demos
+├── healthcare_costs/ # thesis case (DE/FR/IT news, DRI)
+├── food_policy/      # thesis validation case, reference concourse included
+├── health_prevention/# Bevölkerungsrat transcripts (different corpus type)
+└── TA-Swiss/         # LLMs, skills and qualifications (EN/DE/FR/IT news)
+scripts/              # Swissdox fetch + local keyword filter
 tests/                # Offline pytest smoke tests
 notebooks/            # Optional helpers (anchor_workshop, exploration)
 
-paper/                # Parked EMNLP validation work — see paper/README.md
+paper/                # Parked validation work — see paper/README.md
 ├── baselines.py      # B1–B6
 ├── evaluation.py     # coverage, groundedness, distinctiveness, balance, novelty
-├── prompt_optimization.py
-├── data/             # healthcare_ch / food_policy_ch
-└── configs/
+└── prompt_optimization.py
 
-legacy/               # Original thesis notebooks (untouched)
-texts/                # Planning docs (bare_method_plan.md, EMNLP_plan.md, …)
+docs/                 # planning/ (EMNLP_plan.md, bare_method_plan.md, …), thesis/, presentations/
+legacy/               # Original thesis notebooks + thesis-era data (validation/, side_results/, data/)
 ```
 
 ---
