@@ -73,30 +73,72 @@ def anchor_cosine_retrieval(
         f"top_k={top_k}, aggregation={aggregation}"
     )
 
-    # All-pairs similarity: (n_paragraphs, n_anchors)
-    sims = cosine_similarity_matrix(paragraph_embeddings, anchor_embeddings)
+    n_paragraphs = len(paragraphs_df)
+    chunk_size = 50000
+    eps = 1e-10
 
-    results = {}
+    anchor_norm = anchor_embeddings / (np.linalg.norm(anchor_embeddings, axis=1, keepdims=True) + eps)
+    category_anchor_idx = {
+        cat_id: [i for i, c in enumerate(anchor_categories) if c == cat_id]
+        for cat_id in range(num_categories)
+    }
+
+    # Streaming top-k buffers per category to avoid materializing full similarity matrices.
+    top_scores: dict[int, np.ndarray] = {}
+    top_indices: dict[int, np.ndarray] = {}
+
     for cat_id in range(num_categories):
-        anchor_idx = [i for i, c in enumerate(anchor_categories) if c == cat_id]
+        anchor_idx = category_anchor_idx[cat_id]
         if not anchor_idx:
             logger.warning(f"No anchors for subcategory {cat_id}; skipping")
             continue
+        top_scores[cat_id] = np.empty((0,), dtype=np.float32)
+        top_indices[cat_id] = np.empty((0,), dtype=np.int64)
 
-        cat_sims = sims[:, anchor_idx]  # (n_paragraphs, n_anchors_in_cat)
-        scores = cat_sims.max(axis=1) if aggregation == "max" else cat_sims.mean(axis=1)
+    for start in range(0, n_paragraphs, chunk_size):
+        end = min(start + chunk_size, n_paragraphs)
+        chunk = paragraph_embeddings[start:end]
+        chunk_norm = chunk / (np.linalg.norm(chunk, axis=1, keepdims=True) + eps)
+        sims_chunk = chunk_norm @ anchor_norm.T  # (chunk, n_anchors)
 
-        k = min(top_k, len(scores))
-        top_indices = np.argsort(scores)[-k:][::-1]
+        for cat_id, anchor_idx in category_anchor_idx.items():
+            if not anchor_idx:
+                continue
+            cat_sims = sims_chunk[:, anchor_idx]
+            scores = cat_sims.max(axis=1) if aggregation == "max" else cat_sims.mean(axis=1)
 
-        top_df = paragraphs_df.iloc[top_indices].copy()
-        top_df["similarity_score"] = scores[top_indices]
+            global_idx = np.arange(start, end, dtype=np.int64)
+            merged_scores = np.concatenate([top_scores[cat_id], scores.astype(np.float32, copy=False)])
+            merged_indices = np.concatenate([top_indices[cat_id], global_idx])
+
+            k = min(top_k, len(merged_scores))
+            if len(merged_scores) > k:
+                keep = np.argpartition(merged_scores, -k)[-k:]
+                merged_scores = merged_scores[keep]
+                merged_indices = merged_indices[keep]
+
+            top_scores[cat_id] = merged_scores
+            top_indices[cat_id] = merged_indices
+
+        logger.info(f"  Retrieval chunk processed: {end}/{n_paragraphs}")
+
+    results = {}
+    for cat_id, scores in top_scores.items():
+        idx = top_indices[cat_id]
+        if len(scores) == 0:
+            continue
+        order = np.argsort(scores)[::-1]
+        scores_sorted = scores[order]
+        idx_sorted = idx[order]
+
+        top_df = paragraphs_df.iloc[idx_sorted].copy()
+        top_df["similarity_score"] = scores_sorted
         top_df["subcategory_id"] = cat_id
-
         results[cat_id] = top_df
+
         logger.info(
-            f"  Subcategory {cat_id}: top-{k} score range "
-            f"[{scores[top_indices[-1]]:.4f} – {scores[top_indices[0]]:.4f}]"
+            f"  Subcategory {cat_id}: top-{len(scores_sorted)} score range "
+            f"[{scores_sorted[-1]:.4f} – {scores_sorted[0]:.4f}]"
         )
 
     return results
