@@ -2,9 +2,9 @@
 """Run ablation experiments: systematically vary pipeline parameters.
 
 Usage:
-    python run_experiment.py --config configs/healthcare_ch.yaml --ablations all
-    python run_experiment.py --config configs/healthcare_ch.yaml --ablations A1,A3,A8
-    python run_experiment.py --config configs/healthcare_ch.yaml --ablations A5 --dry-run
+    python run_experiment.py --config projects/healthcare_costs/config.yaml --ablations all
+    python run_experiment.py --config projects/healthcare_costs/config.yaml --ablations A1,A3,A8
+    python run_experiment.py --config projects/healthcare_costs/config.yaml --ablations A5 --dry-run
 
 Ablation IDs:
     A1: No dimensionality reduction (reduction.method: none)

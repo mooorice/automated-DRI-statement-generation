@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AutoConcourse — SwissText 2026 Poster</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+  /* ----- A0 portrait poster geometry -----
+     A0 = 841 × 1189 mm. Rendered as a normal block sized in mm so the browser
+     scrolls naturally and print output is true A0. */
+  @page { size: A0 portrait; margin: 0; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: #efece4;
+  }
+
+  :root {
+    --ink:      #1a1a1a;
+    --muted:    #5a5a5a;
+    --rule:     #c9c9c9;
+    --paper:    #fbfbf8;
+    --accent:   #1f5d6e;   /* deep teal — matches pipeline diagram */
+    --accent-2: #b14a3a;   /* warm rust for "gap" markers */
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    font-weight: 400;
+    text-align: left;
+  }
+  .sheet {
+    background: var(--paper);
+    box-sizing: border-box;
+    /* True A0 portrait, in millimetres */
+    width: 841mm;
+    min-height: 1189mm;
+    padding: 22mm 24mm;
+    margin: 12mm auto;
+    box-shadow: 0 2px 18px rgba(0,0,0,0.08);
+  }
+  @media print {
+    html, body { background: #fff; }
+    .sheet { margin: 0; box-shadow: none; }
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.1;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  h1 { font-size: 22mm; }
+  h2 { font-size: 10mm; margin-bottom: 3mm; }
+  h3 { font-size: 7mm;  margin-bottom: 2mm; color: var(--accent); }
+  p, li { font-size: 5mm; line-height: 1.45; }
+  p { margin: 0 0 3mm 0; }
+  ul { margin: 0 0 3mm 6mm; padding: 0; }
+  li { margin: 0.6mm 0; }
+  strong { font-weight: 600; }
+  em { font-style: italic; color: var(--muted); }
+  code, .mono { font-family: 'JetBrains Mono', monospace; font-size: 4.2mm; }
+
+  /* ----- Poster grid layout ----- */
+  .poster {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    row-gap: 9mm;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 0.7mm solid var(--ink);
+    padding-bottom: 6mm;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 10mm;
+  }
+  .header h1 { font-size: 22mm; line-height: 1.05; }
+  .header .subtitle {
+    font-family: 'EB Garamond', serif;
+    font-size: 9mm; color: var(--muted); margin-top: 3mm;
+  }
+  .header .meta { text-align: right; font-size: 5mm; color: var(--muted); }
+  .header .meta .author { color: var(--ink); font-size: 6mm; font-weight: 500; }
+  .header .meta .venue { color: var(--accent); font-weight: 500; margin-top: 1.5mm; }
+
+  /* TL;DR strip */
+  .tldr {
+    border-left: 1.4mm solid var(--accent);
+    padding: 2mm 0 2mm 6mm;
+    font-size: 6.5mm; line-height: 1.4;
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+  }
+
+  /* Three-column body */
+  .body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12mm; }
+  .col  { display: flex; flex-direction: column; gap: 7mm; }
+  .card + .card { border-top: 0.3mm solid var(--rule); padding-top: 6mm; }
+
+  /* Footer */
+  .footer {
+    border-top: 0.3mm solid var(--rule);
+    padding-top: 5mm;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    font-size: 4.2mm;
+    color: var(--muted);
+  }
+  .footer .center { text-align: center; }
+  .footer .right  { text-align: right; }
+
+  /* Misc components */
+  .pill {
+    display: inline-block; padding: 0.4mm 2.4mm; border-radius: 3mm;
+    font-size: 3.6mm; font-weight: 500; letter-spacing: 0.04em;
+    background: #eef2f3; color: var(--accent); margin-right: 1.2mm;
+    text-transform: uppercase; vertical-align: 0.6mm;
+  }
+  .pill.gap { background: #fbecea; color: var(--accent-2); }
+
+  .pipeline {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 2mm;
+    margin: 3mm 0 2mm 0;
+  }
+  .stage {
+    border: 0.3mm solid var(--rule); border-top: 1mm solid var(--accent);
+    padding: 3mm 3mm; background: #fff;
+    display: flex; flex-direction: column; gap: 1.2mm;
+    min-height: 36mm;
+  }
+  .stage.llm   { border-top-color: #c98a2e; }
+  .stage.human { border-top-color: #6e6e6e; }
+  .stage .n    { font-family: 'EB Garamond', serif; font-size: 6mm; color: var(--accent); line-height: 1; }
+  .stage .name { font-weight: 600; font-size: 4.2mm; }
+  .stage .desc { color: var(--muted); font-size: 3.8mm; line-height: 1.3; }
+
+  .legend { display: flex; gap: 5mm; font-size: 3.8mm; color: var(--muted); margin-top: 1.5mm; }
+  .legend span::before {
+    content: ""; display: inline-block; width: 4mm; height: 1mm;
+    background: var(--accent); margin-right: 1.5mm; vertical-align: middle;
+  }
+  .legend .llm::before   { background: #c98a2e; }
+  .legend .human::before { background: #6e6e6e; }
+
+  .figure { margin: 2mm 0; }
+  .figure img { width: 100%; display: block; border: 0.3mm solid var(--rule); background: #fff; }
+  .figure .caption {
+    font-size: 4mm; color: var(--muted); margin-top: 2mm; line-height: 1.4;
+  }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 2mm 0; }
+  .stat  { border-top: 0.3mm solid var(--rule); padding-top: 2mm; }
+  .stat .num   { font-family: 'EB Garamond', serif; font-size: 11mm; color: var(--accent); line-height: 1; }
+  .stat .lbl   { font-size: 3.8mm; color: var(--muted); margin-top: 1mm; line-height: 1.3; }
+
+  .kv { display: grid; grid-template-columns: 28mm 1fr; gap: 1mm 4mm; font-size: 4.5mm; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  .qr { width: 32mm; height: 32mm; border: 0.3mm solid var(--rule); background: #fff;
+        display: flex; align-items: center; justify-content: center; font-size: 3.2mm; color: var(--muted); }
+</style>
+</head>
+
+<body>
+<div class="sheet">
+<div class="poster">
+
+  <!-- ============== HEADER ============== -->
+  <div class="header">
+    <div>
+      <h1>AutoConcourse</h1>
+      <div class="subtitle">A computational pipeline for automatic generation of Q-concourse statements</div>
+    </div>
+    <div class="meta">
+      <div class="author">Maurice Flechtner</div>
+      <div>University of Zurich · ETH Zurich</div>
+      <div class="mono">maurice.flechtner@zda.uzh.ch</div>
+      <div class="venue">SwissText 2026 · Poster Session</div>
+    </div>
+  </div>
+
+  <!-- ============== TL;DR ============== -->
+  <div class="tldr">
+    Building a <em>concourse</em> — the statement reservoir behind every Q-methodology study — is slow, idiosyncratic, and hard to scale across languages. AutoConcourse turns an issue-scoped multilingual news corpus into a curated set of short, neutral, single-claim statements via anchor-guided dense retrieval and constrained LLM synthesis, with auditable provenance at every stage.
+  </div>
+
+  <!-- ============== BODY ============== -->
+  <div class="body">
+
+    <!-- =========== COLUMN 1 =========== -->
+    <div class="col">
+
+      <div class="card">
+        <h2>1 · Problem</h2>
+        <p>Q-methodology studies subjectivity by having participants sort a <em>Q-sample</em> of 30–60 statements drawn from a broader <em>concourse</em>. The validity of every Q-study depends on the breadth, neutrality, and balance of that statement pool.</p>
+        <p>Concourse construction is currently <strong>labor-intensive, idiosyncratic across teams, and hard to scale</strong>, especially in multilingual settings or under tight project timelines. This bottleneck limits real-world adoption of Q-methodology and of derived instruments such as the <strong>Deliberative Reason Index (DRI)</strong>.</p>
+        <p><strong>Goal.</strong> A reproducible, language-agnostic pipeline that produces Q-ready candidate statements from any text corpus + a list of subtopics — with the researcher retained as final curator.</p>
+      </div>
+
+      <div class="card">
+        <h2>2 · Pipeline</h2>
+        <div class="pipeline">
+          <div class="stage"><span class="n">1</span><span class="name">Corpus assembly</span><span class="desc">Issue-scoped multilingual news; segment, filter, retain metadata.</span></div>
+          <div class="stage llm"><span class="n">2</span><span class="name">Anchor generation</span><span class="desc">LLM writes 3–5 sentence anchor per subcategory × language.</span></div>
+          <div class="stage"><span class="n">3</span><span class="name">Embedding</span><span class="desc">Multilingual SBERT into a shared 384-d space.</span></div>
+          <div class="stage"><span class="n">4</span><span class="name">Anchor retrieval</span><span class="desc">Cosine; top-K per anchor; multi-membership allowed.</span></div>
+          <div class="stage llm"><span class="n">5</span><span class="name">LLM synthesis</span><span class="desc">Constrained prompts → short, neutral, single-claim statements.</span></div>
+          <div class="stage human"><span class="n">6</span><span class="name">Human curation</span><span class="desc">Expert panel reviews for clarity, redundancy, balance.</span></div>
+        </div>
+        <div class="legend">
+          <span>deterministic</span>
+          <span class="llm">LLM-based</span>
+          <span class="human">human-in-the-loop</span>
+        </div>
+        <p style="margin-top:10px;">Stages 1, 3, 4 are deterministic and auditable; stages 2 and 5 are LLM-based; stage 6 is expert-driven. Every retained statement carries provenance back to its top-10 source paragraphs.</p>
+      </div>
+
+      <div class="card">
+        <h2>3 · Anchors as a steering layer</h2>
+        <p>An <strong>anchor</strong> is a short paragraph that semantically represents one subcategory of the discourse. Anchors are embedded alongside the corpus; passages are scored by cosine similarity to anchors and retrieved <em>per subcategory</em>.</p>
+        <p>This gives the researcher fine-grained control over what the concourse covers — substantially more so than unsupervised clustering — while keeping the retrieval step deterministic and inspectable.</p>
+      </div>
+
+    </div>
+
+    <!-- =========== COLUMN 2 =========== -->
+    <div class="col">
+
+      <div class="card">
+        <h2>4 · Retrieval depth controls redundancy</h2>
+        <div class="figure">
+          <img src="overlap_heatmap.png" alt="Pairwise overlap of retrieved paragraphs across anchors at four retrieval depths.">
+          <div class="caption"><strong>Fig. 1.</strong> Pairwise paragraph overlap across the 8 anchors at four retrieval depths (top-50 000, top-5 000, top-500, top-50). At top-50 000, anchors share ≈80% of their material — the LLM would generate near-duplicate statements across subcategories. <strong>Top-500</strong> reduces average cross-anchor overlap to <strong>14.5%</strong> while retaining enough material for synthesis. Retrieval depth is a tunable trade-off between anchor-purity and coverage, not a one-off choice.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>5 · Useful negative result</h2>
+        <p>Before settling on anchor-guided retrieval, we tried the more obvious unsupervised route: cluster paragraph embeddings with HDBSCAN and summarize clusters with BERTopic.</p>
+        <p>Clusters were dominated by <strong>named entities</strong> — pharma companies, federal offices, individual politicians — rather than argumentative themes. Projecting clusters onto our anchor scores, the maximum gap between within-cluster anchor similarities was only <strong>0.185</strong> among the top-20 clusters, at low absolute similarity (≤ 0.6).</p>
+        <p>Conclusion: HDBSCAN/BERTopic are not weak in general, but this unsupervised path clustered on <em>keywords</em>, not on <em>sub-discourses</em>. Anchors encode the researcher's hypothesis space; clustering does not.</p>
+      </div>
+
+      <div class="card">
+        <h2>6 · Stack</h2>
+        <dl class="kv">
+          <dt>Embeddings</dt><dd>paraphrase-multilingual-MiniLM-L12-v2 (DE/FR/IT/EN)</dd>
+          <dt>Retrieval</dt><dd>cosine on UMAP-reduced (50-d) embeddings; max-over-anchors per subcategory</dd>
+          <dt>Generator</dt><dd>GPT-4o via OpenRouter; provider-pluggable (OpenAI / vLLM / Ollama)</dd>
+          <dt>Adapters</dt><dd>csv · jsonl · swissdox · text_dir</dd>
+          <dt>Code</dt><dd>~1 600 LOC Python; offline smoke tests; CC BY-NC 4.0</dd>
+        </dl>
+      </div>
+
+    </div>
+
+    <!-- =========== COLUMN 3 =========== -->
+    <div class="col">
+
+      <div class="card">
+        <h2>7 · Case study: Swiss healthcare costs</h2>
+        <p>Developed alongside <em>Bevölkerungsrat 2025</em>, a Swiss citizens' assembly on healthcare costs (Nov 2024 – Mar 2025, 100 participants sorted from a contact pool of 22 000).</p>
+        <div class="stats">
+          <div class="stat"><div class="num">444 869</div><div class="lbl">articles (Swissdox, 2018–2024, DE/FR/IT)</div></div>
+          <div class="stat"><div class="num">738 598</div><div class="lbl">paragraphs after keyword filter</div></div>
+          <div class="stat"><div class="num">28 + 8</div><div class="lbl">curated considerations + policy options</div></div>
+        </div>
+        <p>The 28-item consideration set and 8-item policy-options set were administered pre- and post-deliberation. DRI rose from <strong>0.16 → 0.19</strong>; an independent multifactor analysis (Veri, 2025) recovered <strong>8 factors with eigenvalues &gt; 1</strong>, consistent with the 8 anchors we constructed.</p>
+      </div>
+
+      <div class="card">
+        <h2>8 · Preliminary validation: food policy</h2>
+        <p>Re-ran the pipeline on Swiss food policy and compared against a human-authored DRI survey (Mathys, 2024).</p>
+        <div class="stats">
+          <div class="stat"><div class="num">≈49%</div><div class="lbl">of 41 considerations matched (good or okay)</div></div>
+          <div class="stat"><div class="num">≈88%</div><div class="lbl">of 8 policy preferences matched</div></div>
+          <div class="stat"><div class="num">≈66%</div><div class="lbl">on the 29 substantively specific considerations</div></div>
+        </div>
+        <p>Unmatched items were either <em>highly general</em> first-person/ethical claims or <em>fringe views</em> absent from mainstream Swiss media — a real limitation of any news-corpus-based approach.</p>
+      </div>
+
+      <div class="card">
+        <h2>9 · Open gaps</h2>
+        <p><span class="pill gap">G1</span><strong>Anchor autonomy.</strong> Anchors are LLM-written but conditioned on a pre-existing expert policy report. A general tool needs anchors derived from the corpus itself or from stakeholder documents — under expert review when available.</p>
+        <p><span class="pill gap">G2</span><strong>Validation breadth.</strong> Current evidence is one qualitative single-rater comparison. A credible study needs multiple raters, multiple topics, blinded origin labels, and ideally a pilot Q-sort comparing factor structures from pipeline- vs. human-authored Q-samples.</p>
+      </div>
+
+      <div class="card">
+        <h2>10 · What we would love your input on</h2>
+        <ul>
+          <li>Strategies for <strong>corpus-derived anchors</strong> that avoid keyword-clustering pitfalls.</li>
+          <li>Validation designs that go beyond surface statement-matching.</li>
+          <li>Transferring beyond DRI to broader Q-statement styles (experiential, moral, narrative).</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============== FOOTER ============== -->
+  <div class="footer">
+    <div class="left">
+      Funded by Horizon Europe — <em>AI4Deliberation</em> · IPZ, University of Zurich · ETH Zurich
+    </div>
+    <div class="center">
+      <span class="mono">github.com/mooorice/automated-DRI-statement-generation</span>
+    </div>
+    <div class="right">
+      SwissText 2026 · Chur · June 2026
+    </div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

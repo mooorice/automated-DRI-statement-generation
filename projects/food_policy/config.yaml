@@ -1,0 +1,71 @@
+# Future of Switzerland's food system — the thesis validation case.
+# Run from project root: python -m autoconcourse.cli --config projects/food_policy/config.yaml
+#
+# Reference: Mathys (2024) SCAFP DRI survey, 41 considerations + 8 policy
+# preferences, in reference/reference_concourse.json.
+#
+# Not yet runnable: the Swissdox download is not in the repo (see README.md).
+
+topic:
+  name: "Future of Switzerland's food system"
+  id: "food_policy_ch"
+  languages: ["de", "fr", "it"]
+
+llm:
+  provider: "openrouter"            # Set OPENROUTER_API_KEY in .env
+  default_model: "openai/gpt-4o"
+  site_name: "AutoConcourse"
+
+corpus:
+  adapter: "swissdox"
+  path: "projects/food_policy/data/swissdox_download.tsv.xz"   # TODO: re-fetch
+  text_column: "content"
+  language_column: "language"
+  group_column: "medium_code"
+  source_id_column: "content_id"
+  filtering:
+    min_length: 20
+    keywords_file: "projects/food_policy/keywords.json"
+    require_keyword: true
+
+anchors:
+  enabled: true
+  method: "llm_generated"
+  anchors_file: "projects/food_policy/anchors.json"
+  subcategories_file: "projects/food_policy/subcategories.json"
+  context_folder: "projects/food_policy/context"   # validation background PDF
+  languages: ["de", "fr", "it"]
+  model: "openai/gpt-4o"
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"
+  batch_size: 32
+  device: "cpu"
+
+retrieval:
+  method: "anchor_cosine"
+  top_k: 500
+  aggregation: "max"
+
+groups:
+  enabled: false              # thesis validation used the same 5 leaning groups; flip to compare
+  groups_file: "projects/food_policy/groups.json"
+  column: "group"
+
+generation:
+  model: "openai/gpt-4o"
+  process: "dri"
+  statements_per_group_per_subcategory: 5
+  output_language: "en"
+  temperature: 0.7
+  # The packaged DRI example bank contains 7 considerations + 3 preferences
+  # from this case's reference survey — disable it so the reference does not
+  # leak into the prompt.
+  dri_consideration_examples_file: ""
+  dri_preference_examples_file: ""
+  group_instruction_template: "All passages come from {group}-leaning media outlets."
+
+# Read only by paper/ (evaluation); ignored by the bare-method loader.
+evaluation:
+  reference_file: "projects/food_policy/reference/reference_concourse.json"
+  coverage_thresholds: [0.7, 0.8, 0.9]

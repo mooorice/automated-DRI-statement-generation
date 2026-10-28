@@ -3,6 +3,7 @@
 .python-version
 .dri_env/
 .venv/
+venv/
 .todo.txt
 
 # Python
@@ -13,33 +14,28 @@ __pycache__/
 *.egg
 build/
 dist/
+.pytest_cache/
 
 # WSL/Windows metadata leakage
 *:Zone.Identifier
 
 # Pipeline runtime artifacts
-cache/
-outputs/
+/cache/
+/outputs/
 *.npy
-projects/*/data/paragraphs/
-projects/*/data/embeddings/
-projects/*/data/anchors/anchors.csv
+
+# Per-project data. Tracked: config.yaml, subcategories/keywords/anchors/groups
+# JSON, reference/ concourses, README. Not tracked:
+#   data/     corpora (Swissdox-licensed full text, deliberation transcripts)
+#             and pipeline artifacts (paragraphs, embeddings)
+#   context/  grounding documents (may be confidential, e.g. focus groups)
+#   outputs/  generated concourses (regenerable from config)
+projects/*/data/
+projects/*/context/
 projects/*/outputs/
 
-# Pre-refactor thesis artifacts (untracked, not part of the package)
-/merged_transcripts.txt
-/grok_consideration_statements_*.csv
-/data/00_downloads/
-/data/01_text_data/
-/data/02_embedded_data/
-/data/03_dimensionality_reduced_data/
-/data/04_categorized_data/
-/data/05_LLM_data/
-/data/06_LLM_data/
-/data/97_side_data/
-/data/98_side_results/
-/data/99_anchor_data/
-/Validation/data/
+# Corpus-derived text in the thesis-era code (Swissdox excerpts)
+legacy/**/*top_500_similarity_score.txt
 
 # IDE / OS
 .vscode/

@@ -1,6 +1,6 @@
 # paper/ — parked validation work
 
-This directory holds the EMNLP-paper-specific scaffolding (baselines B1–B6, evaluation metrics, ablations A1–A8, prompt optimization, healthcare/food-policy data) that was lifted out of the bare-method package during the strip-back.
+This directory holds the EMNLP-paper-specific scaffolding (baselines B1–B6, evaluation metrics, ablations A1–A8, prompt optimization) that was lifted out of the bare-method package during the strip-back.
 
 ## Why it's here
 
@@ -16,6 +16,8 @@ When restarting paper work:
    - `evaluation.reference_file`, `evaluation.coverage_thresholds` (used by `evaluation.py` and `cli.evaluation_main`)
    - `reduction.method`, `reduction.n_components`, `reduction.umap_params` (used by `cli.ABLATIONS` A1–A3)
    - `perspective_groups` (renamed to `groups` in the bare method — `cli.ABLATIONS` A4 needs updating)
+
+   The case configs in `projects/<case>/config.yaml` already carry an `evaluation:` block (ignored by the bare-method loader, available via the raw YAML).
    - `generation.prompt_optimization` (used by `prompt_optimization.py`)
 
    Either restore these sections in `autoconcourse/config.py`, or extend the config in a paper-specific overlay.
@@ -39,14 +41,11 @@ paper/
 ├── prompts/
 │   ├── policy_option_generation.txt
 │   └── prompt_optimization.txt
-├── configs/
-│   ├── healthcare_ch.yaml
-│   └── food_policy_ch.yaml
 ├── data/
-│   ├── healthcare_ch/
-│   ├── food_policy_ch/
 │   └── example_reference_concourse.json
 ├── run_baselines.py
 ├── run_evaluation.py
 └── run_experiment.py
 ```
+
+Case data and configs (healthcare costs, food policy, health prevention, TA-Swiss) live in `projects/<case>/`; reference concourses go in `projects/<case>/reference/`.

@@ -1,0 +1,67 @@
+# Healthcare costs in Switzerland — the original thesis case.
+# Run from project root: python -m autoconcourse.cli --config projects/healthcare_costs/config.yaml
+#
+# Settings mirror the thesis run (Swissdox news, DE/FR/IT, 5 political-leaning
+# groups, top-500 passages, GPT-4o). The thesis additionally reduced
+# embeddings with UMAP (50d); the bare method retrieves on raw embeddings.
+#
+# Not yet runnable: the Swissdox download is not in the repo (see README.md).
+
+topic:
+  name: "Rising healthcare costs in Switzerland"
+  id: "healthcare_ch"
+  languages: ["de", "fr", "it"]
+
+llm:
+  provider: "openrouter"            # Set OPENROUTER_API_KEY in .env
+  default_model: "openai/gpt-4o"
+  site_name: "AutoConcourse"
+
+corpus:
+  adapter: "swissdox"
+  path: "projects/healthcare_costs/data/swissdox_download.tsv.xz"   # TODO: re-fetch
+  text_column: "content"
+  language_column: "language"
+  group_column: "medium_code"
+  source_id_column: "content_id"
+  filtering:
+    min_length: 20
+    keywords_file: "projects/healthcare_costs/keywords.json"
+    require_keyword: true
+
+anchors:
+  enabled: true
+  method: "llm_generated"
+  anchors_file: "projects/healthcare_costs/anchors.json"
+  subcategories_file: "projects/healthcare_costs/subcategories.json"
+  context_folder: "projects/healthcare_costs/context"   # INTERFACE policy analysis PDF
+  languages: ["de", "fr", "it"]
+  model: "openai/gpt-4o"
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"
+  batch_size: 32
+  device: "cpu"
+
+retrieval:
+  method: "anchor_cosine"
+  top_k: 500
+  aggregation: "max"
+
+groups:
+  enabled: true
+  groups_file: "projects/healthcare_costs/groups.json"   # political leaning of outlets
+  column: "group"
+
+generation:
+  model: "openai/gpt-4o"
+  process: "dri"
+  statements_per_group_per_subcategory: 5
+  output_language: "en"
+  temperature: 0.7
+  group_instruction_template: "All passages come from {group}-leaning media outlets."
+
+# Read only by paper/ (evaluation); ignored by the bare-method loader.
+evaluation:
+  reference_file: "projects/healthcare_costs/reference/reference_concourse.json"   # TODO: missing
+  coverage_thresholds: [0.7, 0.8, 0.9]

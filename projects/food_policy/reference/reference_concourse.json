@@ -1,0 +1,251 @@
+{
+  "topic": "food_policy_ch",
+  "source": "Mathys (2024) SCAFP DRI survey; extracted from legacy/validation/data/06_comparison/*_summary.xlsx (column validation_statement)",
+  "statements": [
+    {
+      "id": "Q10_1",
+      "text": "Climate variation is normal, so why should this be a problem?",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_2",
+      "text": "Climate change will not be a problem because there will be technological solutions available.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_3",
+      "text": "I think it is safe to say climate change is here.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_4",
+      "text": "The negative effects of climate change on local commerce should be taken into account.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_5",
+      "text": "I do not trust what scientists say about climate change.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_6",
+      "text": "I do not trust what I hear about climate change from the government.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_7",
+      "text": "It is difficult to trust what comes out in the media on the issue of climate change.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q10_8",
+      "text": "There is not enough information to definitively say that climate change is real.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q20_1",
+      "text": "There is not much point in me doing anything to make agriculture more sustainable. No one else is going to.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q20_2",
+      "text": "I do not know what to do. I am very concerned and would like to do something, but I donâ€™t have a realistic shortlist of things that would really make a difference.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q20_3",
+      "text": "I believe that the difference we can have as an individual, in Switzerland, is so minimal that our actions are worthless.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q20_4",
+      "text": "I am not going to do anything to address the impacts of the agri-food system because it is not a major issue.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_1",
+      "text": "I am happy to pay a higher price for local or organic food products",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_2",
+      "text": "Eating sustainably is too expensive, and only wealthy people can afford it",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_3",
+      "text": "Agricultural subsidies should promote sustainable, pesticide and antibiotic-free production.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_4",
+      "text": "Sustainable agriculture increases prices and harms consumer freedom. The production should be adapted to what people demand.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_5",
+      "text": "Food accessibility (price) and security (availability) is NOT COMPATIBLE with a sustainable food system",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_6",
+      "text": "Strong regulation of food production will eventually damage our economic relationship with other countries",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_7",
+      "text": "We should develop short distribution channels and support local production instead of supporting big agrifood corporations",
+      "type": "consideration"
+    },
+    {
+      "id": "Q30_8",
+      "text": "We need to focus on adaptation actions that are concerned with the economic future of the country.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q40_1",
+      "text": "Actions on the food system in Switzerland will lead to increased imports and a shift of pollution abroad",
+      "type": "consideration"
+    },
+    {
+      "id": "Q40_2",
+      "text": "We need actions to protect inhabitants and biodiversity from harmful pesticides.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q40_3",
+      "text": "As long as we use animals in agriculture, it cannot be sustainable",
+      "type": "consideration"
+    },
+    {
+      "id": "Q40_4",
+      "text": "We need to deal with the water pollution issue through measures such as reducing fertilizer and pesticide use.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_1",
+      "text": "Banning pesticides might help the local biodiversity but decreases our food production capacity and autonomy",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_2",
+      "text": "Agriculture is already very sustainable. Swiss farmers are on the right track",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_3",
+      "text": "Intensive food production can go along with the protection of the environment and health",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_4",
+      "text": "Farmers already suffer enough from strict rules and paperwork. Family farmers should have more liberties",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_5",
+      "text": "The main focus of planning for adaptation should be to prepare the food system for extreme weather events, such as drought and flooding.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_6",
+      "text": "Products that use environmentally harmful ingredients, such as palm oil, should be taxed in the same way as tobacco products.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q50_7",
+      "text": "If Switzerland reduces greenhouse gas emissions in its food system, it wonâ€™t make a difference.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_1",
+      "text": "It is important to plan for migration by people displaced by malnutrition and famine.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_2",
+      "text": "We should focus on protecting human systems rather than environmental ecosystems.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_3",
+      "text": "The Swiss food system depends on imports from other countries, and it is in our interest to help find an effective global solution.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_4",
+      "text": "Some communities are more affected than others by the global agri-food system, but this is not a priority issue.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_5",
+      "text": "The Swiss food system is particularly vulnerable to climate change, and it is in our interest to help find an effective global solution.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q60_6",
+      "text": "Climate warming will ultimately benefit food production globally as plants better growth in higher temperature",
+      "type": "consideration"
+    },
+    {
+      "id": "Q70_1",
+      "text": "It is NOT necessary to engage with the community when deciding what are the most important issues for planning for food system changes.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q70_2",
+      "text": "Planning for food system adaptation needs a holistic approach, considering a whole range of issues, instead of focusing on individual issues.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q70_3",
+      "text": "There is no urgent need to prepare for an increase in illness and death caused by intensive use of pesticides/antibiotics",
+      "type": "consideration"
+    },
+    {
+      "id": "Q70_4",
+      "text": "The community should be involved in discussions about food system adaptation.",
+      "type": "consideration"
+    },
+    {
+      "id": "Q70_5",
+      "text": "It is important to support small-land local farming as they have the fewest resources to deal with the impacts of climate change.",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_1",
+      "text": "Leave the policy settings as they are.",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_2",
+      "text": "Policies that emphasise fewer regulations (e.g., policies that promote free trade agreements by reducing food regulation)",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_3",
+      "text": "Policies that involve moderate sustainable regulations (e.g., banning certain types of pesticides, incentivising organic agriculture)",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_4",
+      "text": "Policies that involve a radical sustainable food regulation (e.g., banning all pesticides, banning the importation of food-related products that employ non-sustainable approaches, exclusively incentivising organic agriculture)",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_5",
+      "text": "Policies that create incentives for local producers to produce sustainable food (e.g., subsidies or tax breaks for local farmers who produce organic products)",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_6",
+      "text": "Adaptation policies and expenditure. Planning controls and emergency response programs.",
+      "type": "preference"
+    },
+    {
+      "id": "Q90_7",
+      "text": "Preparing for climate risk for food production through the development of new approaches and technologies that enhance resilience to the impacts of climate variability or change.",
+      "type": "preference"
+    }
+  ]
+}

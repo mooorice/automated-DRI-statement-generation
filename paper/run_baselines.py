@@ -2,8 +2,8 @@
 """Run baseline systems for comparison.
 
 Usage:
-    python run_baselines.py --config configs/healthcare_ch.yaml
-    python run_baselines.py --config configs/healthcare_ch.yaml --baselines B1_zero_context,B3_bm25_retrieval
+    python run_baselines.py --config projects/healthcare_costs/config.yaml
+    python run_baselines.py --config projects/healthcare_costs/config.yaml --baselines B1_zero_context,B3_bm25_retrieval
 """
 
 from paper.cli import baselines_main
