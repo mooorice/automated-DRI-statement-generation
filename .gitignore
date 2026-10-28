@@ -3,7 +3,6 @@
 .python-version
 .dri_env/
 .venv/
-venv/
 .todo.txt
 
 # Python
@@ -22,6 +21,10 @@ dist/
 cache/
 outputs/
 *.npy
+projects/*/data/paragraphs/
+projects/*/data/embeddings/
+projects/*/data/anchors/anchors.csv
+projects/*/outputs/
 
 # Pre-refactor thesis artifacts (untracked, not part of the package)
 /merged_transcripts.txt

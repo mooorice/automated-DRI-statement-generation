@@ -13,6 +13,10 @@ class TopicConfig:
     name: str
     id: str
     languages: list[str]
+    description: str | None = None    # Rich, human-readable framing of the topic
+                                      # for LLM prompts. Both `keywords` and
+                                      # `subcategories` use this as their topic
+                                      # fallback before `name`.
 
 
 @dataclass
@@ -71,17 +75,100 @@ class LLMConfig:
 
 @dataclass
 class AnchorConfig:
+    """LLM-generated anchor texts (one per subcategory × language).
+
+    Strict, self-contained context loading — mirrors `keywords` and
+    `subcategories`. Both `context_folder` (auto-loads every supported
+    file inside) and `context_files` (explicit list) are supported and
+    stack. Missing files raise a hard error.
+    """
+
     enabled: bool = True
     method: str = "llm_generated"
     anchors_file: str | None = None
     subcategories_file: str = ""
-    context_document: str | None = None
+    # Folder; ALL supported files inside (.txt/.md/.pdf, recursive) are
+    # loaded as grounding context for every anchor generation call.
+    context_folder: str | None = None
+    # Additional individual files, stacked on top of context_folder.
+    context_files: list[str] = field(default_factory=list)
     # Languages to generate anchors in. Default is monolingual English; for a
     # multilingual corpus, set to e.g. ["de", "fr", "it"] so each subcategory
     # has one anchor per language.
     languages: list[str] = field(default_factory=lambda: ["en"])
     model: str = "openai/gpt-4o"
     anchors_per_subcategory: int = 1
+
+
+@dataclass
+class KeywordsConfig:
+    """LLM-generated keyword list for `corpus.filtering.keywords_file`.
+
+    Run via `python -m autoconcourse.keywords --config <config.yaml>`.
+
+    Strict, self-contained section: keyword generation does NOT pull defaults
+    from anchors.* or other unrelated sections. Each field's resolution order
+    (highest priority first):
+
+      topic              → CLI --topic > keywords.topic > topic.description > topic.name
+      languages          → CLI --language > keywords.languages > topic.languages
+      per_language       → CLI --per-language > keywords.per_language > 50
+      context paths      → CLI --context-file (stacked) + keywords.context_folder
+                            (all files in dir) + keywords.context_files. Never
+                            inherits from anchors.context_document.
+      subcategories_file → CLI --subcategories > keywords.subcategories_file > none
+      model              → CLI --model > keywords.model > llm.default_model
+      output_file        → CLI --output > keywords.output_file
+                            > corpus.filtering.keywords_file
+    """
+
+    topic: str | None = None
+    per_language: int = 50
+    languages: list[str] = field(default_factory=list)
+    context_folder: str | None = None
+    context_files: list[str] = field(default_factory=list)
+    subcategories_file: str | None = None
+    model: str | None = None
+    output_file: str | None = None
+
+
+@dataclass
+class SubcategoriesConfig:
+    """LLM-generated subcategories taxonomy.
+
+    Run via `python -m autoconcourse.subcategories --config <config.yaml>`.
+    Output drops into anchors.subcategories_file (or `output_file` if set).
+
+    Strict, self-contained section — no silent fallbacks to anchors.* for
+    context. Two modes:
+
+      - **Seeded**: user provides rough cluster definitions in plain text
+        (`seeds` inline or `seeds_file`). The LLM produces one structured
+        subcategory per seed, preserving order, names, and intent.
+      - **Unseeded**: LLM generates `count` subcategories from topic + context.
+
+    Resolution order per field:
+      topic         → CLI --topic > subcategories.topic > topic.description > topic.name
+      language      → CLI --language > subcategories.language > topic.languages[0] > "en"
+      count         → CLI --count > len(seeds) > subcategories.count
+      context paths → CLI flags + subcategories.context_folder
+                      + subcategories.context_files (no anchors fallback)
+      seeds         → CLI --seeds-file > subcategories.seeds_file
+                      > subcategories.seeds (inline)
+      model         → CLI --model > subcategories.model > llm.default_model
+      output_file   → CLI --output > subcategories.output_file
+                      > anchors.subcategories_file
+    """
+
+    topic: str | None = None
+    count: int = 8
+    language: str | None = None
+    context_folder: str | None = None
+    context_files: list[str] = field(default_factory=list)
+    seeds: str | None = None             # Plain-text cluster definitions, inline
+    seeds_file: str | None = None        # OR path to a .txt/.md file with the same
+    model: str | None = None
+    output_file: str | None = None
 
 
 @dataclass
@@ -116,8 +203,24 @@ class GroupsConfig:
 
 @dataclass
 class GenerationConfig:
-    model: str = "openai/gpt-4o"
+    model: str = "openai/gpt-4o-mini"
+    # Controls which generation workflow to run:
+    #   - "q-concourse": generate one list of consideration statements
+    #   - "dri": generate both consideration and preference statements
+    process: str = "q-concourse"
     statements_per_group_per_subcategory: int = 5
+    # DRI-specific overrides. When set, these take precedence over
+    # `statements_per_group_per_subcategory` for that statement type.
+    dri_considerations_per_group_per_subcategory: int | None = None
+    dri_preferences_per_group_per_subcategory: int | None = None
+    # Reference examples for DRI prompts. null → packaged defaults under
+    # `autoconcourse/prompts/examples/`. Set to a path (absolute or relative
+    # to the project root) to override. Set to "" to disable in-prompt
+    # examples for that statement type.
+    dri_consideration_examples_file: str | None = None
+    dri_preference_examples_file: str | None = None
+    # Cap the number of example lines injected into the prompt. null = all.
+    dri_max_examples: int | None = 100
     output_language: str = "en"
     prompt_template: str = "default"
     temperature: float = 0.7
@@ -141,9 +244,12 @@ class PipelineConfig:
     retrieval: RetrievalConfig
     groups: GroupsConfig
     generation: GenerationConfig
+    keywords: KeywordsConfig = field(default_factory=KeywordsConfig)
+    subcategories: SubcategoriesConfig = field(default_factory=SubcategoriesConfig)
 
     # Set at load time
     _base_dir: Path = field(default_factory=lambda: Path("."))
+    _config_path: Path | None = field(default=None, repr=False)
     _raw: dict = field(default_factory=dict, repr=False)
 
     def resolve_path(self, path_str: str) -> Path:
@@ -161,11 +267,47 @@ class PipelineConfig:
 
     @property
     def output_dir(self) -> Path:
-        return self._base_dir / "outputs" / self.topic.id
+        """Project-local outputs directory.
+
+        Sits next to the project's `data/` folder so caches, intermediate
+        artifacts, and final deliverables all live inside the project.
+        """
+        return self.project_dir / "outputs"
 
     @property
     def cache_dir(self) -> Path:
-        return self._base_dir / "cache" / self.topic.id
+        """Legacy alias for project-local artifacts root."""
+        return self.project_data_dir
+
+    @property
+    def project_dir(self) -> Path:
+        if self._config_path is not None:
+            return self._config_path.parent
+        return self._base_dir
+
+    @property
+    def project_data_dir(self) -> Path:
+        return self.project_dir / "data"
+
+    @property
+    def paragraphs_cache_path(self) -> Path:
+        return self.project_data_dir / "paragraphs" / "paragraphs.csv"
+
+    @property
+    def embeddings_dir(self) -> Path:
+        return self.project_data_dir / "embeddings"
+
+    @property
+    def paragraph_embeddings_path(self) -> Path:
+        return self.embeddings_dir / "paragraph_embeddings.npy"
+
+    @property
+    def anchor_embeddings_path(self) -> Path:
+        return self.embeddings_dir / "anchor_embeddings.npy"
+
+    @property
+    def anchors_cache_path(self) -> Path:
+        return self.project_data_dir / "anchors" / "anchors.csv"
 
 
 def _build_dataclass(cls, data: dict | None):
@@ -198,7 +340,7 @@ def _find_project_root(start: Path) -> Path:
     """Walk upward from `start` until a pyproject.toml or .git is found.
 
     Falls back to the current working directory if no marker is found. This
-    lets configs live anywhere in the tree (configs/, data/example/<topic>/)
+    lets configs live anywhere in the tree (projects/<topic>/config.yaml)
     while paths in the config still resolve relative to the project root.
     """
     p = start.resolve()
@@ -227,6 +369,8 @@ def load_config(config_path: str | Path) -> PipelineConfig:
     retrieval = _build_dataclass(RetrievalConfig, raw.get("retrieval"))
     groups = _build_dataclass(GroupsConfig, raw.get("groups"))
     generation = _build_dataclass(GenerationConfig, raw.get("generation"))
+    keywords = _build_dataclass(KeywordsConfig, raw.get("keywords"))
+    subcategories = _build_dataclass(SubcategoriesConfig, raw.get("subcategories"))
 
     config = PipelineConfig(
         topic=topic,
@@ -237,7 +381,10 @@ def load_config(config_path: str | Path) -> PipelineConfig:
         retrieval=retrieval,
         groups=groups,
         generation=generation,
+        keywords=keywords,
+        subcategories=subcategories,
         _base_dir=base_dir,
+        _config_path=config_path.resolve(),
         _raw=raw,
     )
 
@@ -277,6 +424,12 @@ def _validate_config(config: PipelineConfig) -> None:
 
     if config.retrieval.aggregation not in ("max", "mean"):
         errors.append(f"retrieval.aggregation must be 'max' or 'mean', got '{config.retrieval.aggregation}'")
+
+    if config.generation.process not in ("q-concourse", "dri"):
+        errors.append(
+            "generation.process must be 'q-concourse' or 'dri', "
+            f"got '{config.generation.process}'"
+        )
 
     if errors:
         raise ValueError("Config validation errors:\n" + "\n".join(f"  - {e}" for e in errors))

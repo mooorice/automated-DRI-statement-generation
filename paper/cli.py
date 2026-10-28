@@ -40,22 +40,21 @@ def baselines_main(args=None):
 
     baseline_list = ALL_BASELINES if parsed.baselines == "all" else parsed.baselines.split(",")
 
-    cache = config.cache_dir
     subcat_path = config.resolve_path(config.anchors.subcategories_file)
     subcategories = load_json(subcat_path)
 
     import pandas as pd
-    paragraphs_df = pd.read_csv(cache / "paragraphs.csv")
+    paragraphs_df = pd.read_csv(config.paragraphs_cache_path)
 
     # Bare method has no reduction step; baselines use raw embeddings.
-    para_emb = load_embeddings(cache / "paragraph_embeddings.npy")
+    para_emb = load_embeddings(config.paragraph_embeddings_path)
 
     anchor_emb = None
     anchor_cats = None
     try:
-        from autoconcourse.anchors import load_anchors
-        anchors_df = load_anchors(cache / "anchors.csv")
-        anchor_emb = load_embeddings(cache / "anchor_embeddings.npy")
+        from autoconcourse.anchors import load_anchors, resolve_anchors_path
+        anchors_df = load_anchors(resolve_anchors_path(config))
+        anchor_emb = load_embeddings(config.anchor_embeddings_path)
         anchor_cats = anchors_df["category"].tolist()
     except FileNotFoundError:
         logger.warning("Anchor data not found; some baselines may fail")
@@ -114,7 +113,7 @@ def evaluation_main(args=None):
     subcategories = load_json(subcat_path)
 
     corpus_paragraphs = None
-    corpus_cache = config.cache_dir / "paragraphs.csv"
+    corpus_cache = config.paragraphs_cache_path
     if corpus_cache.exists():
         import pandas as pd
         corpus_df = pd.read_csv(corpus_cache)

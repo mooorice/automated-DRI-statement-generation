@@ -3,7 +3,7 @@
 # max similarity to its subcategory's anchors, so a German passage matches the
 # German anchor and a French passage matches the French anchor.
 #
-# Run from project root: python -m autoconcourse.cli --config data/example/multilingual/config.yaml
+# Run from project root: python -m autoconcourse.cli --config projects/example/multilingual/config.yaml
 
 topic:
   name: "Climate change policy (multilingual example)"
@@ -17,7 +17,7 @@ llm:
 
 corpus:
   adapter: "csv"
-  path: "data/example/multilingual/corpus.csv"
+  path: "projects/example/multilingual/corpus.csv"
   text_column: "text"
   id_column: "id"
   language_column: "language"
@@ -27,8 +27,8 @@ corpus:
 anchors:
   enabled: true
   method: "from_file"
-  anchors_file: "data/example/multilingual/anchors.json"
-  subcategories_file: "data/example/multilingual/subcategories.json"
+  anchors_file: "projects/example/multilingual/anchors.json"
+  subcategories_file: "projects/example/multilingual/subcategories.json"
   languages: ["de", "fr", "it"]
 
 embedding:

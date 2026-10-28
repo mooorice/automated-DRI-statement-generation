@@ -2,8 +2,8 @@
 """Run the AutoConcourse pipeline.
 
 Usage:
-    python run_pipeline.py --config data/example/monolingual/config.yaml
-    python run_pipeline.py --config data/example/multilingual/config.yaml --steps corpus,anchors,embed,retrieve
+    python run_pipeline.py --config projects/example/monolingual/config.yaml
+    python run_pipeline.py --config projects/example/multilingual/config.yaml --steps corpus,anchors,embed,retrieve
     python run_pipeline.py --config <your_topic>/config.yaml --force
 
 Equivalent invocations:

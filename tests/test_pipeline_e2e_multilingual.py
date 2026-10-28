@@ -97,7 +97,7 @@ def test_multilingual_pipeline_e2e(stub_embedding_model, stub_llm_client, tmp_pa
     assert len(statements) == 6
     assert {s["subcategory_id"] for s in statements} == {0, 1}
 
-    out = tmp_path / "outputs" / "synthetic_multi" / "anchor_guided" / "concourse.json"
+    out = tmp_path / "synthetic_multi" / "outputs" / "anchor_guided" / "concourse.json"
     assert out.exists()
     saved = json.loads(out.read_text())
     assert saved["topic"] == "synthetic_multi"
@@ -122,13 +122,13 @@ def test_multilingual_retrieval_uses_all_anchor_languages(stub_embedding_model, 
     # Run up to retrieval; skip generate (no LLM stub here).
     run_pipeline(config, steps=["corpus", "anchors", "embed", "retrieve"])
 
-    # Cached paragraphs.csv should exist and have all 6 rows
+    # Project-local paragraphs artifact should exist and have all 6 rows
     import pandas as pd
-    paragraphs = pd.read_csv(tmp_path / "cache" / "synthetic_multi" / "paragraphs.csv")
+    paragraphs = pd.read_csv(tmp_path / "synthetic_multi" / "data" / "paragraphs" / "paragraphs.csv")
     assert len(paragraphs) == 6
-    # Cached embeddings exist
+    # Project-local embeddings artifacts exist
     import numpy as np
-    para_emb = np.load(tmp_path / "cache" / "synthetic_multi" / "paragraph_embeddings.npy")
-    anchor_emb = np.load(tmp_path / "cache" / "synthetic_multi" / "anchor_embeddings.npy")
+    para_emb = np.load(tmp_path / "synthetic_multi" / "data" / "embeddings" / "paragraph_embeddings.npy")
+    anchor_emb = np.load(tmp_path / "synthetic_multi" / "data" / "embeddings" / "anchor_embeddings.npy")
     assert para_emb.shape == (6, 384)
     assert anchor_emb.shape == (6, 384)  # 2 subcategories × 3 languages

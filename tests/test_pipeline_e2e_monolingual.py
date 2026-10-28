@@ -99,7 +99,7 @@ def test_monolingual_pipeline_e2e(stub_embedding_model, stub_llm_client, tmp_pat
     assert subcategory_ids == {0, 1}
 
     # Output JSON exists and round-trips
-    out = tmp_path / "outputs" / "synthetic_mono" / "anchor_guided" / "concourse.json"
+    out = tmp_path / "synthetic_mono" / "outputs" / "anchor_guided" / "concourse.json"
     assert out.exists()
     saved = json.loads(out.read_text())
     assert saved["topic"] == "synthetic_mono"
@@ -107,6 +107,18 @@ def test_monolingual_pipeline_e2e(stub_embedding_model, stub_llm_client, tmp_pat
     assert len(saved["statements"]) == 6
     assert all("subcategory" in s for s in saved["statements"])
     assert all("source_paragraphs" in s for s in saved["statements"])
+
+    # The Excel-friendly CSV is written alongside the JSON.
+    csv_out = out.with_suffix(".csv")
+    assert csv_out.exists()
+    # UTF-8 BOM prefix for Excel compatibility.
+    assert csv_out.read_bytes().startswith(b"\xef\xbb\xbf")
+    csv_text = csv_out.read_text(encoding="utf-8-sig")
+    header = csv_text.splitlines()[0].split(",")
+    for col in ("id", "subcategory", "subcategory_id", "group", "text", "source_paragraphs"):
+        assert col in header, f"missing column {col!r} in CSV header: {header}"
+    # 6 data rows + 1 header row
+    assert len(csv_text.strip().splitlines()) == 7
 
 
 def test_monolingual_pipeline_with_groups(stub_embedding_model, stub_llm_client, tmp_path):

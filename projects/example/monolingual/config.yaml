@@ -1,5 +1,5 @@
 # Minimal monolingual example — climate change discourse, English only.
-# Run from project root: python -m autoconcourse.cli --config data/example/monolingual/config.yaml
+# Run from project root: python -m autoconcourse.cli --config projects/example/monolingual/config.yaml
 
 topic:
   name: "Climate change policy (example)"
@@ -13,21 +13,21 @@ llm:
 
 corpus:
   adapter: "csv"
-  path: "data/example/monolingual/corpus.csv"
+  path: "projects/example/monolingual/corpus.csv"
   text_column: "text"
   id_column: "id"
   language_column: "language"
   group_column: "source"      # newspaper outlet, used by the optional groups stratification
   filtering:
     min_length: 20
-    keywords_file: "data/example/monolingual/keywords.json"
+    keywords_file: "projects/example/monolingual/keywords.json"
     require_keyword: false    # tiny example corpus — keep all rows
 
 anchors:
   enabled: true
   method: "from_file"
-  anchors_file: "data/example/monolingual/anchors.json"
-  subcategories_file: "data/example/monolingual/subcategories.json"
+  anchors_file: "projects/example/monolingual/anchors.json"
+  subcategories_file: "projects/example/monolingual/subcategories.json"
   languages: ["en"]
 
 embedding:

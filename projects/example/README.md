@@ -10,8 +10,8 @@ Two minimal, runnable example topics that document the canonical AutoConcourse d
 Each is fully self-contained — config, corpus, subcategories, anchors. Run from the project root:
 
 ```bash
-python -m autoconcourse.cli --config data/example/monolingual/config.yaml
-python -m autoconcourse.cli --config data/example/multilingual/config.yaml
+python -m autoconcourse.cli --config projects/example/monolingual/config.yaml
+python -m autoconcourse.cli --config projects/example/multilingual/config.yaml
 ```
 
 (Both call the LLM in the `generate` step. Use `--steps corpus,anchors,embed,retrieve` to dry-run everything except generation.)
@@ -19,7 +19,7 @@ python -m autoconcourse.cli --config data/example/multilingual/config.yaml
 ## Files in each example
 
 ### `config.yaml`
-Pipeline configuration. See `configs/schema.yaml` for the full set of options.
+Pipeline configuration. See `projects/example/schema.yaml` for the full set of options.
 
 ### `corpus.csv`
 Canonical corpus shape, one passage per row. Required columns: `id`, `text`. Optional: `language`, `source`, plus any extra metadata you want preserved through the pipeline.
@@ -50,13 +50,13 @@ Optional corpus filter. Either a flat list of strings or a `{lang_code: [...]}` 
 
 ## Adding a new topic
 
-1. `cp -r data/example/monolingual data/<your_topic>` (or multilingual).
+1. `cp -r projects/example/monolingual projects/<your_topic>` (or multilingual).
 2. Edit `config.yaml`: change `topic.name`, `topic.id`, point `corpus.path` and the anchor/subcategory paths at your new dir.
 3. Replace `corpus.csv` with your data (canonical columns: `id`, `text`, optional `language`/`source`/etc.).
 4. Edit `subcategories.json` for your topic.
 5. Decide anchor method:
    - `from_file`: hand-write `anchors.json`.
    - `llm_generated`: leave the anchor file out, set `anchors.method: llm_generated` in config — the pipeline will generate them on first run.
-6. Run: `python -m autoconcourse.cli --config data/<your_topic>/config.yaml`.
+6. Run: `python -m autoconcourse.cli --config projects/<your_topic>/config.yaml`.
 
 For non-CSV inputs, change `corpus.adapter` to `jsonl`, `swissdox`, or `text_dir` and adjust column-mapping fields.

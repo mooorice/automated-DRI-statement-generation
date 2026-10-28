@@ -1,0 +1,128 @@
+# AutoConcourse — config schema reference
+# Copy and edit for your topic. See monolingual/ and multilingual/ for runnable examples.
+
+topic:
+  name: ""                    # Required: short human-readable topic name (e.g. "TA-Swiss")
+  id: ""                      # Required: short identifier (used in cache/output paths)
+  languages: ["en"]           # Required: list of languages present in the corpus
+  description: null           # Optional: rich, sentence-length topic framing for LLM prompts.
+                              # Used as the topic fallback by both `keywords` and `subcategories`
+                              # (before `name`). Set this once, reuse everywhere.
+
+llm:
+  provider: "openrouter"      # "openrouter" | "openai" | "custom"
+  # Provider defaults (overridable below):
+  #   openrouter → base_url https://openrouter.ai/api/v1, api_key_env OPENROUTER_API_KEY
+  #   openai     → base_url SDK default (api.openai.com), api_key_env OPENAI_API_KEY
+  #   custom     → base_url and api_key_env REQUIRED below (e.g. Azure, vLLM, local)
+  base_url: null              # Overrides provider default
+  api_key_env: null           # Overrides provider default
+  default_model: "openai/gpt-4o"
+  extra_headers: {}           # Arbitrary HTTP headers passed to every request
+  # OpenRouter-only: optional ranking headers (sent only when provider == openrouter)
+  site_url: null              # → HTTP-Referer
+  site_name: null             # → X-Title
+
+corpus:
+  adapter: "csv"              # "csv" | "jsonl" | "swissdox" | "text_dir"
+  path: ""                    # Path to input file/dir, relative to project root
+  text_column: "text"         # Source column for the passage text
+  id_column: null             # null = generate sequential ids
+  language_column: null       # Optional: source column → canonical 'language'
+  group_column: null          # Optional: source column → canonical 'group'
+  source_id_column: null      # Optional: source column → canonical 'source_id'
+  options: {}                 # Adapter-specific extras (e.g. delimiter, glob, min_length)
+  filtering:                  # Applied after the adapter, on canonical shape
+    keywords_file: null       # JSON file with a flat list or {lang: [...]} dict
+    require_keyword: false
+    min_length: 20            # Drop passages shorter than this
+    languages: []             # Restrict to these languages (requires 'language' column)
+
+subcategories:                # Optional: LLM-generated taxonomy of subcategories.
+                              # Used only by `python -m autoconcourse.subcategories` —
+                              # output drops into anchors.subcategories_file.
+                              # Strict, self-contained: never inherits from anchors.*
+  topic: null                 # Per-section topic override. null → topic.description → topic.name.
+  count: 8                    # Target number of subcategories (ignored when seeds are present —
+                              # count is inferred from the seed list).
+  language: null              # Single language code for output (name/description).
+                              # null → first of topic.languages, else "en".
+  context_folder: null        # Folder; all supported files inside loaded as grounding context.
+  context_files: []           # Additional individual files.
+  seeds: null                 # OPTIONAL: plain-text cluster definitions. Free-form;
+                              # the LLM parses forgivingly. Example::
+                              #
+                              #   seeds: |
+                              #     Cluster 0, "School/educational skills": capacités, …
+                              #     Cluster 1, "AI applications in science/health": …
+                              #
+                              # When set, one structured subcategory is produced per seed,
+                              # preserving order, names, and intent.
+  seeds_file: null            # OR: path to a file containing the same plain-text seeds.
+  model: null                 # null → llm.default_model
+  output_file: null           # null → anchors.subcategories_file
+
+keywords:                     # Optional: LLM-generated corpus-filter keyword list.
+                              # Used only by `python -m autoconcourse.keywords` —
+                              # output drops into corpus.filtering.keywords_file.
+                              # Strict, self-contained section: never inherits from anchors.*
+  topic: null                 # Per-section topic override. null → topic.description → topic.name.
+  per_language: 50            # "Amount": target keywords per language
+  languages: []               # Languages to generate for; [] → inherits topic.languages
+  context_folder: null        # Path to a folder; ALL files inside (.txt/.md/.pdf, recursive)
+                              # are loaded as grounding context.
+  context_files: []           # Additional individual files, stacked on top of context_folder
+  subcategories_file: null    # null → no subcategories in the prompt (no anchors fallback)
+  model: null                 # null → inherits llm.default_model (no anchors fallback)
+  output_file: null           # null → inherits corpus.filtering.keywords_file
+
+anchors:
+  enabled: true               # false = unguided retrieval (not implemented in bare method)
+  method: "llm_generated"     # "llm_generated" | "from_file"
+  anchors_file: null          # Required for "from_file"
+  subcategories_file: ""      # Required: JSON list of {id, name, description, anchor_prompt, ...}
+  context_folder: null        # Folder; ALL supported files inside (.txt/.md/.pdf, recursive)
+                              # are loaded as grounding context for every anchor.
+  context_files: []           # Additional individual files, stacked on top of context_folder.
+                              # Missing files = hard error.
+  languages: ["en"]           # Generate one anchor per language per subcategory
+  model: "openai/gpt-4o"
+  anchors_per_subcategory: 1
+
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"   # SBERT model id
+  batch_size: 32
+  device: "cpu"               # "cpu" or "cuda"
+
+retrieval:
+  method: "anchor_cosine"
+  top_k: 500                  # Passages retrieved per subcategory
+  aggregation: "max"          # "max" | "mean" — across a subcategory's anchors
+
+groups:                       # Optional: stratify retrieval by a corpus column
+  enabled: false
+  groups_file: null           # JSON: {column?: str, groups: {name: {label, values: [...]}}}
+  column: "group"             # Corpus column to match against group values
+
+generation:
+  model: "openai/gpt-4o"
+  process: "q-concourse"          # "q-concourse" | "dri"
+  statements_per_group_per_subcategory: 5
+  # DRI-only overrides (used when process: "dri"). null → falls back to
+  # statements_per_group_per_subcategory.
+  dri_considerations_per_group_per_subcategory: null
+  dri_preferences_per_group_per_subcategory: null
+  # Reference examples injected into DRI prompts (OpenRouter-compatible, no
+  # vector store needed). null → packaged defaults under
+  # autoconcourse/prompts/examples/. "" → disable examples for that type.
+  dri_consideration_examples_file: null
+  dri_preference_examples_file: null
+  dri_max_examples: 100              # null → include all example lines
+  output_language: "en"
+  prompt_template: "default"
+  temperature: 0.7
+  max_retries: 3
+  retry_delay: 5.0
+  group_instruction_template: null   # Optional string with a {group} placeholder, rendered
+                                     # into the prompt when groups.enabled is true.
+                                     # E.g. "All passages come from {group}-leaning media outlets."
