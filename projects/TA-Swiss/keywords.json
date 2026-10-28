@@ -1,0 +1,154 @@
+{
+  "ai": {
+    "en": [
+      "AI",
+      "artificial intelligence",
+      "generative AI",
+      "LLM",
+      "large language model",
+      "ChatGPT",
+      "GPT",
+      "conversational AI",
+      "chatbot",
+      "AI assistant"
+    ],
+    "de": [
+      "KI",
+      "künstliche Intelligenz",
+      "generative KI",
+      "LLM",
+      "Sprachmodell",
+      "ChatGPT",
+      "GPT",
+      "Konversations-KI",
+      "Chatbot",
+      "KI-Assistent"
+    ],
+    "fr": [
+      "IA",
+      "intelligence artificielle",
+      "IA générative",
+      "LLM",
+      "grand modèle de langage",
+      "ChatGPT",
+      "GPT",
+      "agent conversationnel",
+      "chatbot",
+      "assistant virtuel"
+    ],
+    "it": [
+      "IA",
+      "intelligenza artificiale",
+      "IA generativa",
+      "LLM",
+      "modello linguistico",
+      "ChatGPT",
+      "GPT",
+      "chatbot",
+      "assistente virtuale",
+      "assistente conversazionale"
+    ]
+  },
+  "education": {
+    "en": [
+      "education",
+      "school",
+      "university",
+      "teaching",
+      "teacher",
+      "student",
+      "pupil",
+      "learning",
+      "classroom",
+      "curriculum",
+      "pedagogy"
+    ],
+    "de": [
+      "Bildung",
+      "Schule",
+      "Hochschule",
+      "Unterricht",
+      "Lehrperson",
+      "Lehrer",
+      "Student",
+      "Schüler",
+      "Lernen",
+      "Didaktik",
+      "Lehrplan"
+    ],
+    "fr": [
+      "éducation",
+      "école",
+      "université",
+      "enseignement",
+      "enseignant",
+      "étudiant",
+      "apprentissage",
+      "classe",
+      "pédagogie",
+      "programme scolaire"
+    ],
+    "it": [
+      "istruzione",
+      "scuola",
+      "università",
+      "insegnamento",
+      "insegnante",
+      "studente",
+      "apprendimento",
+      "didattica",
+      "curricolo",
+      "formazione"
+    ]
+  },
+  "work": {
+    "en": [
+      "work",
+      "job",
+      "employment",
+      "workplace",
+      "labor market",
+      "career",
+      "profession",
+      "skills",
+      "upskilling",
+      "reskilling"
+    ],
+    "de": [
+      "Arbeit",
+      "Job",
+      "Beschäftigung",
+      "Arbeitsplatz",
+      "Arbeitsmarkt",
+      "Beruf",
+      "Karriere",
+      "Kompetenzen",
+      "Weiterbildung",
+      "Umschulung"
+    ],
+    "fr": [
+      "travail",
+      "emploi",
+      "marché du travail",
+      "milieu professionnel",
+      "métier",
+      "carrière",
+      "compétences",
+      "qualification",
+      "formation continue",
+      "reconversion"
+    ],
+    "it": [
+      "lavoro",
+      "occupazione",
+      "mercato del lavoro",
+      "posto di lavoro",
+      "professione",
+      "carriera",
+      "competenze",
+      "qualifiche",
+      "riqualificazione",
+      "aggiornamento professionale"
+    ]
+  }
+}

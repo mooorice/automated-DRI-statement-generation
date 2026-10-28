@@ -1,0 +1,51 @@
+[
+  {
+    "id": 0,
+    "name": "Educational skills and instruction",
+    "description": "Impact of LLMs on student competencies, teacher qualifications, classroom instruction, and academic learning.",
+    "topic_focus": "the impact of LLMs on educational skills, teaching, and academic qualifications",
+    "anchor_prompt": "Write a comprehensive paragraph about how LLMs affect students' capacities and intelligence, teachers' qualifications and training, classroom instruction, and the development of academic skills."
+  },
+  {
+    "id": 1,
+    "name": "LLMs in science and health",
+    "description": "Applications of LLMs in scientific research and healthcare, including their capabilities and implications for professional expertise.",
+    "topic_focus": "the application of LLMs in scientific research and healthcare professions",
+    "anchor_prompt": "Write a comprehensive paragraph about the use of LLMs in science and health, covering scientific applications, health coaching, recent product announcements, and the consequences for professional capabilities and expertise."
+  },
+  {
+    "id": 2,
+    "name": "Digital infrastructure and cloud computing",
+    "description": "Computing infrastructure, data centers, and cloud technologies underpinning LLM development and deployment, and the technical skills they require.",
+    "topic_focus": "the digital infrastructure, data centers, and cloud computing that power LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about the digital infrastructure that supports LLMs, including data centers, cloud computing, and the data analyst and IT competencies required to build and maintain these systems."
+  },
+  {
+    "id": 3,
+    "name": "AI capabilities and use cases",
+    "description": "General capabilities of LLMs and the range of skills and use cases they support across work and education contexts.",
+    "topic_focus": "the capabilities of artificial intelligence and its use cases in work and education",
+    "anchor_prompt": "Write a comprehensive paragraph about the capabilities of artificial intelligence and large language models, covering the competencies they enable, recent product announcements, and their scientific and everyday use cases."
+  },
+  {
+    "id": 4,
+    "name": "Ethics, bias, and professional responsibility",
+    "description": "Ethical concerns, ideological and intellectual bias, and the professional responsibilities of leaders and practitioners deploying LLMs.",
+    "topic_focus": "ethics, bias, and professional responsibility in the use of LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about the ethical issues raised by LLMs, including ideological and intellectual biases, the risk that automation suppresses analytical skills, and the professional responsibilities that leaders and practitioners must uphold."
+  },
+  {
+    "id": 5,
+    "name": "Software development and AI investment",
+    "description": "Investment in AI by software companies, including funding flows, development efforts, and emerging capabilities such as image processing.",
+    "topic_focus": "software development and corporate investment in artificial intelligence",
+    "anchor_prompt": "Write a comprehensive paragraph about software development and corporate investment in AI, covering funding from software companies such as Microsoft, the expansion of AI capabilities, and advances in areas like image processing."
+  },
+  {
+    "id": 6,
+    "name": "Conversational AI and chatbots",
+    "description": "Chatbots and conversational AI systems and their role in everyday work, learning, and personal interaction across age groups.",
+    "topic_focus": "conversational AI and chatbots in everyday work and learning",
+    "anchor_prompt": "Write a comprehensive paragraph about conversational AI and chatbots, covering the capabilities of text robots, their adoption across age groups, and their effect on the skills people develop through everyday chat-based interaction."
+  }
+]

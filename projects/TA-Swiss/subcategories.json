@@ -1,0 +1,58 @@
+[
+  {
+    "id": 0,
+    "name": "School/educational skills",
+    "description": "This subcategory covers the impact of LLMs on skills taught and developed in formal educational settings, including teaching methods, teacher roles, and student competencies.",
+    "topic_focus": "the transformation of school and educational skills through LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about the transformation of school and educational skills through LLMs, covering teaching methods, teacher roles, and student competencies."
+  },
+  {
+    "id": 1,
+    "name": "AI applications in science/health",
+    "description": "This subcategory addresses the use of LLMs and AI in scientific research and healthcare, including applications like health coaching and scientific analysis.",
+    "topic_focus": "the application of LLMs in scientific and health domains",
+    "anchor_prompt": "Write a comprehensive paragraph about the application of LLMs in scientific and health domains, including health coaching and scientific analysis."
+  },
+  {
+    "id": 2,
+    "name": "Digital infrastructures/cloud computing",
+    "description": "This subcategory focuses on the technological backbone supporting LLMs, including cloud computing, data centers, and IT infrastructure.",
+    "topic_focus": "the role of digital infrastructures and cloud computing in enabling LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about the role of digital infrastructures and cloud computing in enabling LLMs, including data centers and IT infrastructure."
+  },
+  {
+    "id": 3,
+    "name": "AI capabilities/use cases",
+    "description": "This subcategory examines the general capabilities of AI and LLMs, including their skills, intelligence, and practical use cases across various domains.",
+    "topic_focus": "the capabilities and use cases of AI and LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about the capabilities and use cases of AI and LLMs, including their skills and intelligence across domains."
+  },
+  {
+    "id": 4,
+    "name": "Ethics, bias and professional responsibilities",
+    "description": "This subcategory deals with ethical considerations, biases, and the professional responsibilities associated with LLM deployment and use.",
+    "topic_focus": "ethical issues, bias, and professional responsibilities in LLM use",
+    "anchor_prompt": "Write a comprehensive paragraph about ethical issues, bias, and professional responsibilities in LLM use, including ideological and professional concerns."
+  },
+  {
+    "id": 5,
+    "name": "Software development and investments",
+    "description": "This subcategory covers the software industry's engagement with LLMs, including development, investment, and corporate activities.",
+    "topic_focus": "software development and investment trends related to LLMs",
+    "anchor_prompt": "Write a comprehensive paragraph about software development and investment trends related to LLMs, including corporate activities and funding."
+  },
+  {
+    "id": 6,
+    "name": "Conversational AI/chatbots",
+    "description": "This subcategory focuses on conversational AI and chatbot technologies, including their capabilities, intelligence, and public interaction.",
+    "topic_focus": "the development and impact of conversational AI and chatbots",
+    "anchor_prompt": "Write a comprehensive paragraph about the development and impact of conversational AI and chatbots, including their capabilities and public interaction."
+  },
+  {
+    "id": 7,
+    "name": "AI on the job market",
+    "description": "This subcategory addresses the impact of LLMs and AI on the labor market, including job displacement and creation, the transformation of professions and tasks, automation of white-collar work, shifts in skill demand (upskilling/reskilling), wage and inequality effects, and changes to employment structures and worker bargaining power.",
+    "topic_focus": "the impact of AI and LLMs on the labor market, employment, and the future of work",
+    "anchor_prompt": "Write a comprehensive paragraph about the impact of AI and large language models on the labor market, covering job displacement and creation, the transformation of professions and tasks, automation of white-collar and creative work, new skill demands and reskilling, wage and inequality effects, and changes to employment structures and worker bargaining power."
+  }
+]

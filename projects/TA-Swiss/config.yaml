@@ -1,0 +1,89 @@
+# TA-Swiss project config.
+# Run from project root: python -m autoconcourse.cli --config projects/TA-Swiss/config.yaml
+
+topic:
+  name: "TA-Swiss"
+  id: "ta-swiss"
+  languages: ["en","de","fr","it"]
+  description: "Advantages and risks of LLMs for skills and qualifications in the context of work and education"
+
+llm:
+  provider: "openrouter"            # Set OPENROUTER_API_KEY in .env
+  default_model: "deepseek/deepseek-v4-pro"
+  site_name: "AutoConcourse"        # optional, shows up on openrouter.ai rankings
+
+corpus:
+  adapter: "swissdox" 
+  path: "projects/TA-Swiss/data/06341b2d-d4af-4f00-a206-54b33ee44762__2026_05_11T14_29_37.filtered.tsv"
+  text_column: "content"
+  language_column: "language"
+  group_column: "medium_code"      # newspaper outlet, used by the optional groups stratification
+  source_id_column: "content_id"
+  filtering:
+    min_length: 120 # 20 characters
+    keywords_file: "projects/TA-Swiss/keywords.json"
+    require_keyword: true    # tiny example corpus — keep all rows
+
+anchors:
+  enabled: true
+  method: "llm_generated"               # auto-fills any missing (subcategory × language) anchors
+  anchors_file: "projects/TA-Swiss/anchors.json"   # canonical anchors path (load/save)
+  subcategories_file: "projects/TA-Swiss/subcategories.json"
+  context_folder: "projects/TA-Swiss/context"      # auto-loads every PDF/note
+  languages: ["en","de","fr","it"]                    # one anchor per (subcategory × language)
+  model: "deepseek/deepseek-v4-pro"
+
+embedding:
+  model: "codefuse-ai/F2LLM-v2-160M"
+  batch_size: 4
+  device: "cuda"
+
+retrieval:
+  method: "anchor_cosine"
+  top_k: 1000                    # tiny corpus
+  aggregation: "max"
+
+subcategories:
+  # topic: null            # → topic.description
+  language: "en"
+  context_folder: "projects/TA-Swiss/context"
+  seeds: |
+    Cluster 0, "School/educational skills": capacités, intelligence, intelligenz, lehrgänge, lehrende, unterricht, lehrpersonen, ausgebildeten, akademischen, unterrichtet
+    Cluster 1, "AI applications in science/health": capacités, intelligence, künstliche, fähigkeiten, produktankündigungen, scientifique, gesundheitscoach, thématiques, einsatz, modell
+    Cluster 2, "Digital infrastructures/cloud computing": infrastructure, technologie, computing, données, data, cloud, informatique, centers, analyst, centres
+    Cluster 3, "AI capabilities/use cases": künstliche, intelligence, capacités, fähigkeiten, intelligenz, compétences, produktankündigungen, scientifique, gesundheitscoach, thématiques
+    Cluster 4, "Ethics, bias and professional responsibilities": analysefähigkeiten, responsable, intellectuel, idéologiques, dirigeants, préjugés, éthique, andererseits, professionnelles, suppriment
+    Cluster 5, "Software development and investments": capacités, intelligence, softwareunternehmen, softwareentwicklung, investissement, investition, microsoft, financement, augmenter, bildverarbeitung
+    Cluster 6, "Conversational AI/chatbots": textroboter, intelligenz, intelligence, künstlicher, artificielle, fähigkeiten, jährige, bisschen, chat, capacités
+  # model: null            # → llm.default_model
+  # output_file: null      # → anchors.subcategories_file
+
+keywords:
+  # topic: null            # → topic.description
+  per_language: 60
+  languages: ["en", "de", "fr", "it"]   # match topic.languages explicitly
+  context_folder: "projects/TA-Swiss/context"  # auto-loads all PDFs/notes
+  subcategories_file: "projects/TA-Swiss/subcategories.json"
+  # model: null            # → falls back to llm.default_model (deepseek-v4-pro)
+  # output_file: null      # → falls back to corpus.filtering.keywords_file
+
+groups:
+  enabled: false              # set true to enable per-source stratification
+
+generation:
+  model: "deepseek/deepseek-v4-pro"
+  process: "dri"  # "q-concourse" or "dri"
+  statements_per_group_per_subcategory: 5
+  # DRI-only knobs (used when process: "dri"); null → fall back above.
+  dri_considerations_per_group_per_subcategory: 10
+  dri_preferences_per_group_per_subcategory: 6
+  dri_consideration_examples_file: null   # null → packaged defaults
+  dri_preference_examples_file: null
+  dri_max_examples: null                    # null → include every example line
+  output_language: "en"
+  temperature: 0.7
+  max_retries: 3
+  retry_delay: 5.0
+  group_instruction_template: null   # Optional string with a {group} placeholder, rendered
+                                     # into the prompt when groups.enabled is true.
+                                     # E.g. "All passages come from {group}-leaning media outlets."
